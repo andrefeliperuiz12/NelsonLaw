@@ -1,0 +1,14 @@
+# Netlify Redirects
+
+# Redirigir siempre a HTTPS (Netlify lo hace por defecto, pero buena práctica)
+# Sirve la carpeta admin correctamente
+/admin/*  /admin/:splat  200
+
+# Redirecciones para evitar que la gente intente leer los archivos de logica backend
+/supabase/*  /404.html  404
+/css/*       /css/:splat 200
+/js/*        /js/:splat  200
+/assets/*    /assets/:splat 200
+
+# Fallback
+/* /index.html 200

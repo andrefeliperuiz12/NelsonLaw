@@ -1,0 +1,19 @@
+{
+  "name": "nelsonlaw",
+  "version": "1.0.0",
+  "description": "Sitio web institucional para el abogado Nelson Ruiz Pinilla, basado en Ciudad de Panamá. Incluye landing pública de captación de leads, formulario seguro con Cloudflare Turnstile, panel administrativo interno (CRM ligero), y notificaciones por email.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.101.1"
+  },
+  "devDependencies": {
+    "supabase": "^2.84.6"
+  }
+}

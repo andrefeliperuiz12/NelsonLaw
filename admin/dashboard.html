@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leads — Panel Administrativo</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <a href="../" class="admin-logo">
+        NRP <span>Panel</span>
+      </a>
+      <div class="admin-header-right">
+        <span id="userEmail" class="admin-user"></span>
+        <button id="logoutBtn" class="admin-logout-btn">Cerrar Sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <!-- Stats Bar -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card">
+        <div class="stat-card-num" id="statNuevo">0</div>
+        <div class="stat-card-label">Nuevos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" id="statRevision">0</div>
+        <div class="stat-card-label">En Revisión</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" id="statContactado">0</div>
+        <div class="stat-card-label">Contactados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" id="statAgendada">0</div>
+        <div class="stat-card-label">Agendados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-num" id="statTotal">0</div>
+        <div class="stat-card-label">Total Activos</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, teléfono, email o área..." />
+      </div>
+      <div class="filter-group">
+        <select id="statusFilter">
+          <option value="">Todos los estados</option>
+          <option value="nuevo">Nuevo</option>
+          <option value="en_revision">En Revisión</option>
+          <option value="contactado">Contactado</option>
+          <option value="consulta_agendada">Consulta Agendada</option>
+          <option value="cerrado_ganado">Cerrado (Ganado)</option>
+          <option value="cerrado_no_ganado">Cerrado (No Ganado)</option>
+          <option value="archivado">Archivado</option>
+        </select>
+        <label class="show-archived">
+          <input type="checkbox" id="showArchived" /> Mostrar archivados
+        </label>
+      </div>
+    </div>
+
+    <!-- Leads Table -->
+    <div class="leads-table-wrap">
+      <table class="leads-table" id="leadsTable">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Área</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody">
+          <tr><td colspan="6" class="loading-row">Cargando leads...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <p>No se encontraron leads con los filtros actuales.</p>
+    </div>
+  </main>
+
+  <!-- Lead Detail Modal -->
+  <div class="modal-overlay" id="leadModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-header">
+        <h2 id="modalName">Nombre del Lead</h2>
+        <span class="modal-date" id="modalDate"></span>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-section">
+          <h4>Información de Contacto</h4>
+          <div class="modal-field">
+            <span class="modal-label">Teléfono:</span>
+            <span id="modalPhone"></span>
+            <a id="modalPhoneWA" href="#" target="_blank" rel="noopener" class="wa-link">WhatsApp</a>
+          </div>
+          <div class="modal-field">
+            <span class="modal-label">Email:</span>
+            <span id="modalEmail">—</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-label">Área Legal:</span>
+            <span id="modalArea"></span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-label">Fuente:</span>
+            <span id="modalSource"></span>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h4>Resumen del Caso</h4>
+          <p id="modalSummary" class="modal-summary"></p>
+        </div>
+
+        <div class="modal-section">
+          <h4>Gestión</h4>
+          <div class="modal-field">
+            <label for="modalStatus">Estado:</label>
+            <select id="modalStatus">
+              <option value="nuevo">Nuevo</option>
+              <option value="en_revision">En Revisión</option>
+              <option value="contactado">Contactado</option>
+              <option value="consulta_agendada">Consulta Agendada</option>
+              <option value="cerrado_ganado">Cerrado (Ganado)</option>
+              <option value="cerrado_no_ganado">Cerrado (No Ganado)</option>
+              <option value="archivado">Archivado</option>
+            </select>
+          </div>
+          <div class="modal-field">
+            <label for="modalLastContacted">Último contacto:</label>
+            <input type="datetime-local" id="modalLastContacted" />
+            <button id="markContactedNow" class="btn-small">Marcar ahora</button>
+          </div>
+          <div class="modal-field">
+            <label for="modalNotes">Notas internas:</label>
+            <textarea id="modalNotes" rows="4" placeholder="Agregar notas internas..."></textarea>
+          </div>
+          <div class="modal-field">
+            <label class="archive-label">
+              <input type="checkbox" id="modalArchived" /> Archivar este lead
+            </label>
+          </div>
+        </div>
+
+        <!-- Audit Log -->
+        <div class="modal-section">
+          <h4>Historial de Cambios</h4>
+          <div id="auditLog" class="audit-log">
+            <p class="audit-empty">Sin cambios registrados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="saveLeadBtn" class="btn-primary">Guardar Cambios</button>
+        <button id="cancelModalBtn" class="btn-outline">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.ADMIN_CONFIG = {
+      SUPABASE_URL: 'https://azraryuqcqibppexuiwi.supabase.co',
+      SUPABASE_ANON_KEY: 'sb_publishable_bap-iRt1yLp0kGJjXv3d9Q_n6dz6BDz',
+    };
+  </script>
+  <script src="../js/admin-auth.js"></script>
+  <script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
