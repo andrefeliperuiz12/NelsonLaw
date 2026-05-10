@@ -814,6 +814,7 @@ section {
 /* --- CONTACT / FORM --- */
 #contacto {
   background: var(--navy-mid);
+  margin-right: 5;
 }
 
 .contact-grid {
@@ -1382,9 +1383,11 @@ footer {
   }
 
   .hero-photo {
-    width: 100%; /* Take full width on mobile for better zoom */
+    width: 100%;
+    /* Take full width on mobile for better zoom */
     max-width: none;
-    object-position: center 15%; /* Focus slightly lower than top to get face and shoulders */
+    object-position: center 15%;
+    /* Focus slightly lower than top to get face and shoulders */
   }
 
   /* Hide badge on mobile to allow full view of the photo */
@@ -1560,7 +1563,8 @@ footer {
   }
 
   .section-inner {
-    padding: 3rem 1rem; /* Reduce padding on very small screens to fit content */
+    padding: 3rem 1rem;
+    /* Reduce padding on very small screens to fit content */
     max-width: 100vw;
     box-sizing: border-box;
     overflow-x: hidden;
