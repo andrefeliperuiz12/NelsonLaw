@@ -104,7 +104,7 @@ async function sendNotificationEmail(lead: {
         Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: "Nelson Ruiz Pinilla Web <notificaciones@nelsonruizpinilla.com>",
+        from: "Juriscorp S.C. <notificaciones@juriscorppanama.com>",
         to: [notificationEmail],
         subject: `Nuevo Lead: ${lead.full_name} — ${areaLabels[lead.legal_area] || lead.legal_area}`,
         html: `
@@ -129,7 +129,7 @@ async function sendNotificationEmail(lead: {
               <p style="color: #8a9bb0; margin: 0; font-size: 12px;">El resumen del caso está disponible en el panel de administración por seguridad.</p>
             </div>
             <div style="margin-top: 24px; text-align: center;">
-              <a href="${Deno.env.get("SITE_URL") || "https://nelsonruizpinilla.com"}/admin/dashboard.html" 
+              <a href="${Deno.env.get("SITE_URL") || "https://juriscorppanama.com"}/admin/dashboard.html" 
                  style="display: inline-block; padding: 12px 32px; background: #c9a84c; color: #0d1b2a; text-decoration: none; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 2px;">
                 Ver en Panel
               </a>

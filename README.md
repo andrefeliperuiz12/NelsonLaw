@@ -1,4 +1,4 @@
-# Nelson Ruiz Pinilla — Sitio Web Legal
+# Juriscorp S.C. — Sitio Web Legal
 
 ## Descripción
 
@@ -81,7 +81,7 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase secrets set CLOUDFLARE_TURNSTILE_SECRET=your_secret
 supabase secrets set RESEND_API_KEY=re_your_key
 supabase secrets set NOTIFICATION_EMAIL=nelsonhruiz18@gmail.com
-supabase secrets set SITE_URL=https://nelsonruizpinilla.com
+supabase secrets set SITE_URL=https://juriscorppanama.com
 
 # Deploy
 supabase functions deploy submit-lead
@@ -123,7 +123,7 @@ window.ADMIN_CONFIG = {
 
 ### 8. Configurar dominio
 
-1. En el servicio de hosting, agregar custom domain: `nelsonruizpinilla.com`
+1. En el servicio de hosting, agregar custom domain: `juriscorppanama.com`
 2. Actualizar DNS del dominio para apuntar al hosting
 
 ## Variables de Entorno

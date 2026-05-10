@@ -2,7 +2,7 @@
 
 ## Cómo Ingresar al Panel
 
-1. Abra en su navegador: `https://nelsonruizpinilla.com/admin/`
+1. Abra en su navegador: `https://juriscorppanama.com/admin/`
 2. Ingrese su correo electrónico y contraseña
 3. Haga clic en "Iniciar Sesión"
 

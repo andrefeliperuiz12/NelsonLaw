@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /supabase/
 
-Sitemap: https://nelsonruizpinilla.com/sitemap.xml
+Sitemap: https://juriscorppanama.com/sitemap.xml
