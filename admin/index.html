@@ -55,7 +55,30 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SDK de Supabase con Subresource Integrity (SRI).
+       El panel maneja resúmenes de casos bajo secreto profesional: un CDN
+       comprometido, o un "@2" que un día resuelva a una versión con código
+       malicioso, tendría acceso total a la sesión y a los datos. El navegador
+       ahora rechaza el script si no coincide byte a byte con este hash.
+
+       LA VERSIÓN ESTÁ FIJADA A PROPÓSITO. SRI y versión flotante son
+       incompatibles: el hash sólo vale para unos bytes exactos.
+
+       Se usa la ruta EXPLÍCITA (.../@2.112.3/dist/umd/supabase.js) y no la
+       corta (.../@2). La corta es un fichero generado dinámicamente por
+       jsDelivr, que le añade un banner y advierte en él: "Do NOT use SRI with
+       dynamically generated files". La ruta explícita sirve el fichero
+       original del tarball de npm y es estable.
+
+       AL ACTUALIZAR: hay que cambiar versión Y hash A LA VEZ, y en los DOS
+       archivos (admin/index.html y admin/dashboard.html). Para recalcularlo:
+         curl -sL "<la URL de abajo>" -o sb.js
+         openssl dgst -sha384 -binary sb.js | openssl base64 -A
+       Verificado contra el CDN el 2026-08-23 (v2.112.3, 211907 bytes). -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js"
+          integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
   <script>
     window.ADMIN_CONFIG = {
       SUPABASE_URL: 'https://azraryuqcqibppexuiwi.supabase.co',

@@ -1,5 +1,15 @@
 # Netlify Redirects
 
+# Forzar el dominio canónico.
+# Comprobado el 2026-08-22: el subdominio de Netlify respondía 200 y servía
+# una copia completa del sitio en lugar de redirigir. El canonical absoluto
+# de index.html ya le indicaba a Google cuál es la versión buena, pero esto
+# lo cierra en el origen y evita que el panel /admin/ quede accesible por
+# una segunda URL.
+# El '!' es necesario: sin él, Netlify no aplica la regla sobre rutas que
+# corresponden a archivos existentes.
+https://nelsonruiz-asociados.netlify.app/*  https://juriscorppanama.com/:splat  301!
+
 # Redirigir siempre a HTTPS (Netlify lo hace por defecto, pero buena práctica)
 # Sirve la carpeta admin correctamente
 /admin/*  /admin/:splat  200

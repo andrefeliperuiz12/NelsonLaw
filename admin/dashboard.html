@@ -184,7 +184,17 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SDK de Supabase con Subresource Integrity (SRI).
+       Versión fijada a propósito: SRI y versión flotante son incompatibles.
+       Ruta explícita, no la corta "@2" — jsDelivr genera esa dinámicamente y
+       advierte en el propio fichero contra usar SRI con ella.
+       AL ACTUALIZAR: versión Y hash a la vez, y en los DOS archivos
+       (admin/index.html y admin/dashboard.html). Explicación completa en
+       admin/index.html. Verificado contra el CDN el 2026-08-23. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js"
+          integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
   <script>
     window.ADMIN_CONFIG = {
       SUPABASE_URL: 'https://azraryuqcqibppexuiwi.supabase.co',

@@ -1,0 +1,110 @@
+# ============================================================
+# Juriscorp S.C. — Cabeceras de seguridad (Netlify)
+# ============================================================
+#
+# FORMATO. Netlify usa un parser propio, no un formato estándar: una ruta a
+# columna 0, y debajo las cabeceras INDENTADAS. Su documentación dice que
+# "any line beginning with # will be ignored as a comment" — literalmente,
+# líneas que EMPIEZAN por #. Por eso todos los comentarios de este archivo
+# están a columna 0 y antes de los bloques: un comentario indentado podría
+# parsearse como cabecera malformada. No muevas estos comentarios dentro de
+# los bloques.
+#
+# El valor de una cabecera no puede partirse en varias líneas. Por eso la CSP
+# va en una sola línea larga.
+#
+# ------------------------------------------------------------
+# QUÉ HACE CADA CABECERA DEL BLOQUE /*
+# ------------------------------------------------------------
+#
+# Strict-Transport-Security
+#   Obliga a HTTPS durante un año. Netlify ya sirve HTTPS automático, así que
+#   esto cierra la ventana del primer salto en http://.
+#   SIN "preload" a propósito: entrar en la lista de precarga de Chrome es
+#   prácticamente irreversible y obliga a que TODO subdominio futuro sirva
+#   HTTPS válido. Con la infraestructura aún en movimiento, no compensa.
+#   send.juriscorppanama.com es sólo DNS de correo, no le afecta.
+#
+# X-Content-Type-Options: nosniff
+#   Impide que el navegador "adivine" el tipo de un fichero. Sin esto, un
+#   fichero con extensión inocente puede acabar ejecutándose como script.
+#
+# X-Frame-Options: DENY
+#   Nadie puede meter este sitio en un iframe. Evita clickjacking sobre el
+#   formulario y sobre el panel. Se duplica en la CSP con frame-ancestors.
+#
+# Referrer-Policy
+#   Al salir del sitio se envía sólo el origen, nunca la ruta completa.
+#   Importante aquí: una URL del panel no debe filtrarse a terceros.
+#
+# Permissions-Policy
+#   El sitio no usa cámara, micrófono, geolocalización ni pagos. Se desactivan
+#   explícitamente para que un script inyectado tampoco pueda.
+#
+# ------------------------------------------------------------
+# LA CSP ESTÁ EN REPORT-ONLY. NO BLOQUEA NADA TODAVÍA.
+# ------------------------------------------------------------
+#
+# Orígenes inventariados del código real, no supuestos:
+#   challenges.cloudflare.com   Turnstile: script E iframe (index.html:89)
+#   fonts.googleapis.com        hoja de estilos de fuentes
+#   fonts.gstatic.com           ficheros de fuente
+#   cdn.jsdelivr.net            SDK de Supabase (las dos páginas de admin)
+#   azraryuqcqibppexuiwi...     REST, Auth y la Edge Function
+#
+# POR QUÉ SIGUE EN REPORT-ONLY:
+#
+# Lleva 'unsafe-inline' en script-src, y con eso una CSP NO protege contra
+# XSS, que es justo lo que importa. Activarla así sería una cabecera que
+# aparenta seguridad sin darla. Hace falta por tres manejadores inline:
+#     index.html:514              onclick=
+#     js/admin-dashboard.js:135   onclick=  (fila de la tabla de leads)
+#     js/admin-dashboard.js:141   onclick=  (botón "Ver")
+# Los atributos onclick= los bloquea la CSP SIEMPRE, y los hashes no sirven
+# para ellos. Sin 'unsafe-inline', la tabla de leads deja de responder al clic
+# y el panel queda inservible.
+#
+# Hay además 3 bloques <script> inline (NELSON_CONFIG y ADMIN_CONFIG, uno por
+# página). Ésos sí admiten hashes SHA-256, pero cada edición de la
+# configuración cambiaría el hash: trampa de mantenimiento.
+#
+# Los estilos inline (5 atributos style=, 8 asignaciones .style. desde JS, más
+# los que inyecta Turnstile) obligan a 'unsafe-inline' en style-src. Eso sí es
+# aceptable: la inyección vía CSS es un vector mucho más débil.
+#
+# PARA PASAR A ENFORCE DE VERDAD:
+#   1. Sustituir los 3 onclick= por addEventListener (delegación de eventos
+#      en el dashboard).
+#   2. Quitar 'unsafe-inline' de script-src y añadir los hashes de los 3
+#      bloques inline.
+#   3. Renombrar la cabecera a Content-Security-Policy (sin -Report-Only).
+#
+# Mientras tanto Report-Only sirve para confirmar que el inventario de
+# orígenes está completo. Turnstile es el que más sorpresas suele dar.
+#
+# ------------------------------------------------------------
+# BLOQUE /admin/* — endurecido por encima del resto
+# ------------------------------------------------------------
+# El panel maneja resúmenes de casos sujetos a secreto profesional.
+#
+# X-Robots-Tag
+#   robots.txt ya excluye /admin/ y las dos páginas llevan <meta name=robots>,
+#   pero la cabecera funciona aunque el rastreador no llegue a renderizar el
+#   HTML. Defensa en profundidad, coste cero.
+#
+# Cache-Control: no-store
+#   Que ni un proxy ni el navegador guarden en caché páginas del panel. Evita
+#   que queden en disco en un equipo compartido tras cerrar sesión.
+# ============================================================
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://azraryuqcqibppexuiwi.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store, max-age=0
