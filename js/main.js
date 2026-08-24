@@ -10,12 +10,15 @@
 
   // --- CONFIGURATION ---
   // These will be replaced with actual values during deployment
+  // WHATSAPP_NUMBER no vive aquí a propósito: los enlaces wa.me son
+  // estáticos en el HTML (siguen funcionando sin JavaScript). Esta copia
+  // existía sin que nadie la leyera y fue donde se propagó un número
+  // truncado — menos copias, menos deriva.
   const CONFIG = {
     SUPABASE_URL: '', // Set in HTML or during build
     SUPABASE_ANON_KEY: '', // Set in HTML or during build
     EDGE_FUNCTION_URL: '', // Set in HTML or during build
     TURNSTILE_SITE_KEY: '', // Set in HTML or during build
-    WHATSAPP_NUMBER: '5076673035',
   };
 
   // Allow overriding from global config set in HTML
@@ -219,25 +222,55 @@
           body: JSON.stringify(payload),
         });
 
-        var result = await response.json();
+        // El servidor puede responder algo que no sea JSON: un 502 del gateway,
+        // una página de error de la infraestructura, un HTML de mantenimiento.
+        // Con .json() a secas eso lanza, cae en el catch de red, y el visitante
+        // lee "verifique su conexión a internet" — culpando a su wifi de una
+        // caída nuestra. En un bufete eso es un cliente que se va y no vuelve.
+        var contentType = response.headers.get('content-type') || '';
+        var result = null;
 
-        if (response.ok && result.success) {
+        if (contentType.indexOf('application/json') !== -1) {
+          try {
+            result = await response.json();
+          } catch (parseErr) {
+            result = null; // decía ser JSON pero no lo era
+          }
+        }
+
+        if (response.ok && result && result.success) {
           // Show success
           if (formFields) formFields.classList.add('hidden');
           if (successMsg) successMsg.classList.add('visible');
           if (errorMsg) errorMsg.classList.remove('visible');
         } else {
-          // Show error
-          var message = result.error || 'Error al enviar el formulario. Por favor intente de nuevo.';
+          var message;
+          if (result && result.error) {
+            // Error de negocio: la Edge Function ya devuelve el mensaje en
+            // español y listo para mostrar (validación, rate limit, Turnstile).
+            message = result.error;
+          } else if (response.status >= 500) {
+            message = 'Tuvimos un problema en nuestro servidor y no pudimos registrar ' +
+                      'su consulta (error ' + response.status + '). No es un problema ' +
+                      'de su conexión. Puede intentarlo en unos minutos o escribirnos ' +
+                      'por WhatsApp al 6673-0357.';
+          } else {
+            message = 'No pudimos enviar el formulario (error ' + response.status + '). ' +
+                      'Puede intentarlo de nuevo o escribirnos por WhatsApp al 6673-0357.';
+          }
           if (errorBanner) {
             errorBanner.textContent = message;
             errorBanner.classList.add('visible');
           }
         }
       } catch (err) {
-        // Network error
+        // Fallo de red REAL: fetch sólo rechaza si la petición no llegó a
+        // completarse (sin conexión, DNS, CORS, conexión cortada). Un error
+        // HTTP del servidor NO llega aquí; se maneja arriba.
         if (errorBanner) {
-          errorBanner.textContent = 'Error de conexión. Por favor verifique su conexión a internet e intente de nuevo.';
+          errorBanner.textContent = 'No pudimos conectar con el servidor. Verifique su ' +
+                                    'conexión a internet e intente de nuevo. Si el problema ' +
+                                    'persiste, escríbanos por WhatsApp al 6673-0357.';
           errorBanner.classList.add('visible');
         }
       } finally {
@@ -267,10 +300,17 @@
     });
   }
 
+  // --- FOOTER YEAR ---
+  function initFooterYear() {
+    var el = document.getElementById('footerYear');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+
   // --- INITIALIZE ---
   document.addEventListener('DOMContentLoaded', function () {
     initNavigation();
     initScrollReveal();
     initForm();
+    initFooterYear();
   });
 })();

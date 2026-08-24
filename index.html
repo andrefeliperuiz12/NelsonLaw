@@ -363,7 +363,10 @@
             </p>
 
             <div class="contact-methods">
-              <a href="https://wa.me/50766730357text=Buenas%2C%20necesito%20asesor%C3%ADa%20legal."
+              <!-- Número de la firma: 50766730357 (+507 6673-0357).
+                   Aparece en 3 enlaces wa.me, en tel:, en el Schema.org y en
+                   NELSON_CONFIG. Si cambia, actualizarlos todos a la vez. -->
+              <a href="https://wa.me/50766730357?text=Buenas%2C%20necesito%20asesor%C3%ADa%20legal."
                 class="contact-method" id="contact-whatsapp" target="_blank" rel="noopener noreferrer">
                 <span class="contact-method-icon">💬</span>
                 <div>
@@ -489,7 +492,8 @@
                   Su consulta ha sido registrada exitosamente. Le contactaremos a la brevedad
                   para evaluar su caso y orientarle sobre los próximos pasos.
                 </p>
-                <a href="https://wa.me/5076673035?text=Buenas%2C%20acabo%20de%20enviar%20una%20consulta%20por%20la%20web."
+                <!-- Número de la firma — mantener sincronizado (ver #contacto). -->
+                <a href="https://wa.me/50766730357?text=Buenas%2C%20acabo%20de%20enviar%20una%20consulta%20por%20la%20web."
                   class="btn-whatsapp-success" target="_blank" rel="noopener noreferrer" id="post-success-whatsapp">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
                     <path
@@ -532,7 +536,9 @@
         <li><a href="#contacto">Contacto</a></li>
       </ul>
       <div class="footer-copy">
-        &copy; 2025 Juriscorp S.C. Todos los derechos reservados.
+        <!-- El año se actualiza desde js/main.js. El valor del span es el
+             fallback visible si el visitante navega sin JavaScript. -->
+        &copy; <span id="footerYear">2026</span> Juriscorp S.C. Todos los derechos reservados.
       </div>
       <div class="footer-confidentiality">
         Toda la información proporcionada a través de este sitio es tratada con estricta confidencialidad
@@ -543,7 +549,8 @@
   </footer>
 
   <!-- ==================== WHATSAPP FLOAT ==================== -->
-  <a href="https://wa.me/5076673035?text=Buenas%2C%20necesito%20asesor%C3%ADa%20legal." class="whatsapp-float"
+  <!-- Número de la firma — mantener sincronizado (ver #contacto). -->
+  <a href="https://wa.me/50766730357?text=Buenas%2C%20necesito%20asesor%C3%ADa%20legal." class="whatsapp-float"
     target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" id="whatsapp-float">
     <svg viewBox="0 0 24 24" fill="white">
       <path
@@ -557,7 +564,10 @@
     window.NELSON_CONFIG = {
       EDGE_FUNCTION_URL: 'https://azraryuqcqibppexuiwi.supabase.co/functions/v1/submit-lead',
       TURNSTILE_SITE_KEY: '0x4AAAAAACzHvF4l30jALx9_',
-      WHATSAPP_NUMBER: '5076673035',
+      // Número de la firma en formato E.164 sin '+'. Los enlaces wa.me del
+      // HTML son estáticos y no se generan desde aquí: si cambia, hay que
+      // actualizar también los 3 href de wa.me, el tel: y el Schema.org.
+      WHATSAPP_NUMBER: '50766730357',
     };
   </script>
   <script src="js/main.js"></script>
