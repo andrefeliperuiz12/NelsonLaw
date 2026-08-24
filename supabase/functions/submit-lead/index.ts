@@ -46,15 +46,43 @@ const VALID_LEGAL_AREAS = [
   "otro",
 ];
 
-// Sanitize text input
-function sanitize(input: string): string {
+// Tope de longitud de los campos de texto libre.
+const MAX_INPUT_LENGTH = 2000;
+
+// Normaliza la entrada. NO escapa HTML, y eso es deliberado.
+//
+// El escape va en el punto de SALIDA: escapeHtml() al construir el correo (más
+// abajo), y en el panel escapeHtml()/textContent (js/admin-dashboard.js).
+//
+// Escapar aquí corrompía el dato en origen. Un apellido panameño como D'León
+// se almacenaba literalmente como "D&#x27;León" y viajaba así al panel y a
+// cualquier exportación futura. Además rompía dos cosas menos visibles:
+//   - Un correo válido como o'brien@bufete.com se convertía en
+//     o&#x27;brien@... y la validación de más abajo lo rechazaba, perdiendo
+//     el lead con un mensaje de "correo inválido" que era falso.
+//   - El recorte a 2000 se aplicaba DESPUÉS de escapar, así que podía cortar
+//     una entidad por la mitad ("&#x2") y el tope real variaba según cuántas
+//     comillas escribiera la persona.
+//
+// El nombre importa: una función llamada sanitize() que no sanea invita a que
+// alguien la dé por segura al interpolarla en HTML.
+function normalizeInput(input: string): string {
   return input
     .trim()
+    .substring(0, MAX_INPUT_LENGTH);
+}
+
+// Escapa para interpolar en HTML. Punto de SALIDA, no de entrada.
+// El orden importa: & va PRIMERO o volvería a escapar las entidades que
+// generan las líneas siguientes. El sanitize() anterior nunca escapaba &,
+// así que un nombre con "&" podía producir entidades no intencionadas.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .substring(0, 2000); // Max length cap
+    .replace(/'/g, "&#x27;");
 }
 
 // Validate email format
@@ -68,20 +96,44 @@ function isValidPhone(phone: string): boolean {
   return digits.length >= 7 && digits.length <= 20;
 }
 
+// Resultado del envío de notificación.
+// La función NO lanza: devuelve el resultado para que el handler lo
+// persista en la fila del lead en lugar de perderlo en los logs.
+type NotifyResult = { sent: true } | { sent: false; error: string };
+
+// Remitente por defecto. El dominio debe estar VERIFICADO en Resend.
+// Un subdominio verificado no cubre el apex: send.juriscorppanama.com y
+// juriscorppanama.com son dominios distintos para Resend, y usar el que
+// no está verificado devuelve 403 en todos los envíos.
+const RESEND_FROM_FALLBACK = "Juriscorp S.C. <notificaciones@send.juriscorppanama.com>";
+
+// Tope de longitud para notification_error: es una columna de diagnóstico,
+// no un log. Evita guardar cuerpos de respuesta enteros en la base.
+const NOTIFICATION_ERROR_MAX = 500;
+
+function truncateError(message: string): string {
+  return message.length > NOTIFICATION_ERROR_MAX
+    ? message.substring(0, NOTIFICATION_ERROR_MAX)
+    : message;
+}
+
 // Send notification email via Resend
 async function sendNotificationEmail(lead: {
   full_name: string;
   phone: string;
   email: string | null;
   legal_area: string;
-}): Promise<void> {
+}): Promise<NotifyResult> {
   const resendApiKey = Deno.env.get("RESEND_API_KEY");
   const notificationEmail = Deno.env.get("NOTIFICATION_EMAIL");
 
   if (!resendApiKey || !notificationEmail) {
-    console.error("Email notification skipped: missing RESEND_API_KEY or NOTIFICATION_EMAIL");
-    return;
+    const error = "Configuración ausente: falta RESEND_API_KEY o NOTIFICATION_EMAIL en los secretos del proyecto.";
+    console.error(error);
+    return { sent: false, error };
   }
+
+  const fromAddress = Deno.env.get("RESEND_FROM") || RESEND_FROM_FALLBACK;
 
   const areaLabels: Record<string, string> = {
     derecho_administrativo: "Derecho Administrativo",
@@ -104,8 +156,11 @@ async function sendNotificationEmail(lead: {
         Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: "Juriscorp S.C. <notificaciones@juriscorppanama.com>",
+        from: fromAddress,
         to: [notificationEmail],
+        // El asunto NO se escapa a propósito: es una cabecera de correo, no
+        // HTML. Escaparlo mostraría "D&#x27;León" literal en la bandeja. Viaja
+        // como JSON a la API de Resend, que se encarga de codificarlo.
         subject: `Nuevo Lead: ${lead.full_name} — ${areaLabels[lead.legal_area] || lead.legal_area}`,
         html: `
           <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0d1b2a; color: #d0dae8; border-radius: 8px;">
@@ -115,12 +170,12 @@ async function sendNotificationEmail(lead: {
             </div>
             <table style="width: 100%; border-collapse: collapse;">
               <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Nombre</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${lead.full_name}</td></tr>
+              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(lead.full_name)}</td></tr>
               <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Teléfono</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${lead.phone}</td></tr>
+              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(lead.phone)}</td></tr>
               ${lead.email ? `
               <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Email</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${lead.email}</td></tr>
+              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(lead.email)}</td></tr>
               ` : ""}
               <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Área Legal</td></tr>
               <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${areaLabels[lead.legal_area] || lead.legal_area}</td></tr>
@@ -140,12 +195,24 @@ async function sendNotificationEmail(lead: {
     });
 
     if (!res.ok) {
-      const errData = await res.json();
-      console.error("Resend error:", JSON.stringify(errData));
+      // .text() en lugar de .json(): si Resend devuelve un cuerpo que no es
+      // JSON (p.ej. un error de gateway), .json() lanzaría y perderíamos el
+      // detalle real del fallo.
+      const detail = await res.text().catch(() => "(sin cuerpo de respuesta)");
+      const error = truncateError(`Resend HTTP ${res.status}: ${detail}`);
+      console.error("Resend error:", error);
+      return { sent: false, error };
     }
+
+    return { sent: true };
   } catch (err) {
-    // Email failure should NOT block lead submission
-    console.error("Email notification failed:", err);
+    // Un fallo de envío nunca debe tumbar el alta del lead: se devuelve
+    // como resultado para que el handler lo registre en la fila.
+    const error = truncateError(
+      `Fallo de red al contactar Resend: ${err instanceof Error ? err.message : String(err)}`
+    );
+    console.error(error);
+    return { sent: false, error };
   }
 }
 
@@ -251,12 +318,14 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 4. Sanitize inputs
-    const cleanName = sanitize(fullName);
-    const cleanPhone = sanitize(phone);
-    const cleanEmail = email ? sanitize(email) : null;
-    const cleanSummary = sanitize(caseSummary);
-    const cleanArea = sanitize(legalArea);
+    // 4. Normalizar entradas (recorte de espacios y tope de longitud).
+    // NO se escapa HTML aquí: el valor se almacena limpio y se escapa en cada
+    // punto de salida. Ver normalizeInput() y escapeHtml() arriba.
+    const cleanName = normalizeInput(fullName);
+    const cleanPhone = normalizeInput(phone);
+    const cleanEmail = email ? normalizeInput(email) : null;
+    const cleanSummary = normalizeInput(caseSummary);
+    const cleanArea = normalizeInput(legalArea);
 
     // 5. Validate field formats
     if (cleanName.length < 2) {
@@ -336,15 +405,51 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 7. Send email notification (non-blocking — failure won't affect response)
-    await sendNotificationEmail({
+    // 7. Notificar por email.
+    //    El lead YA está guardado en este punto. Un fallo aquí se registra
+    //    en la propia fila, pero nunca revierte ni bloquea el alta.
+    //    La llamada es bloqueante a propósito: necesitamos su resultado
+    //    para persistirlo en el paso 8.
+    const notifyResult = await sendNotificationEmail({
       full_name: cleanName,
       phone: cleanPhone,
       email: cleanEmail,
       legal_area: cleanArea,
     });
 
-    // 8. Return success ONLY after confirmed DB insertion
+    // 8. Persistir el estado de la notificación (migración 002).
+    //    Sustituye el antiguo fallo silencioso: antes, un rechazo de Resend
+    //    solo dejaba una línea en unos logs de retención corta y el lead
+    //    quedaba indistinguible de uno notificado con éxito.
+    //    Si este UPDATE falla, solo se registra: el lead ya está a salvo y
+    //    la respuesta al visitante no cambia.
+    if (data?.id) {
+      try {
+        const { error: notifyUpdateError } = await supabase
+          .from("leads")
+          .update({
+            notification_sent: notifyResult.sent,
+            notification_sent_at: notifyResult.sent ? new Date().toISOString() : null,
+            notification_error: notifyResult.sent ? null : notifyResult.error,
+            notification_attempts: 1,
+          })
+          .eq("id", data.id);
+
+        if (notifyUpdateError) {
+          console.error(
+            "No se pudo registrar el estado de notificación:",
+            notifyUpdateError.message
+          );
+        }
+      } catch (err) {
+        console.error("No se pudo registrar el estado de notificación:", err);
+      }
+    }
+
+    // 9. Return success ONLY after confirmed DB insertion.
+    //    El resultado de la notificación NO condiciona esta respuesta: si el
+    //    lead se guardó, el visitante ve éxito. El estado del correo queda
+    //    en la fila para el panel y para el barrido de reintentos.
     return new Response(
       JSON.stringify({
         success: true,

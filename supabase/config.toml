@@ -368,6 +368,43 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# ============================================================================
+# EDGE FUNCTIONS
+# ============================================================================
+# Configuración versionada a propósito: el interruptor equivalente del panel de
+# Supabase ya se perdió una vez en un redespliegue anterior. Lo que está aquí
+# viaja con el repositorio y se reaplica en cada `supabase functions deploy`.
+
+# submit-lead — endpoint PÚBLICO de captación de leads.
+#
+# verify_jwt = false NO es un descuido. NO LO ACTIVES.
+#
+# Lo invoca el formulario de index.html desde el navegador de un visitante
+# anónimo, que por definición no tiene sesión ni JWT. Tiene que poder llamarse
+# sin autenticación.
+#
+# Con verify_jwt = true el gateway rechaza la petición ANTES de ejecutar la
+# función, y el formulario queda roto en producción:
+#     HTTP 401 — sb-error-code: UNAUTHORIZED_NO_AUTH_HEADER
+#     {"message":"Missing authorization header"}
+# El preflight OPTIONS sigue respondiendo 200, así que el fallo sólo se
+# manifiesta al enviar. Confirmado en producción el 2026-08-23.
+#
+# Exigir la publishable key como cabecera tampoco sería alternativa: es pública
+# por diseño (viaja en el HTML servido al visitante), no aporta seguridad y
+# añade un punto de rotura cada vez que se rote.
+#
+# La protección real de este endpoint vive dentro de la función, en capas
+# (supabase/functions/submit-lead/index.ts):
+#   - Rate limit por IP
+#   - Cloudflare Turnstile verificado server-side
+#   - Consentimiento y campos requeridos obligatorios
+#   - Sanitización de todas las entradas
+#   - Validación de formato de email, teléfono y área legal
+#   - CORS limitado a POST y OPTIONS
+[functions.submit-lead]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327
