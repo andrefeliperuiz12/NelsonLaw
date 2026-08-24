@@ -1,5 +1,10 @@
+# Variables de entorno — NUNCA versionar valores reales.
+# El patrón cubre .env, .env.local, .env.production y cualquier .env.* futuro.
+# La única excepción es la plantilla, que solo contiene placeholders.
 .env
-.env.local
+.env.*
+!.env.example
+
 node_modules/
 .DS_Store
 Thumbs.db
