@@ -68,24 +68,41 @@ En Supabase Dashboard → Authentication → Users → Add User:
 ### 5. Deploy de la Edge Function
 
 ```bash
-# Instalar Supabase CLI
-npm i -g supabase
+# La CLI de Supabase ya está declarada en devDependencies.
+# Supabase NO soporta instalarla globalmente con npm; se invoca con npx.
+npm install
 
-# Login
-supabase login
+# Login (abre el navegador y pide un código de verificación)
+npx supabase login
 
-# Link al proyecto
-supabase link --project-ref YOUR_PROJECT_REF
+# Link al proyecto (pide la contraseña de la base de datos)
+npx supabase link --project-ref azraryuqcqibppexuiwi
 
-# Configurar secretos
-supabase secrets set CLOUDFLARE_TURNSTILE_SECRET=your_secret
-supabase secrets set RESEND_API_KEY=re_your_key
-supabase secrets set NOTIFICATION_EMAIL=nelsonhruiz18@gmail.com
-supabase secrets set SITE_URL=https://juriscorppanama.com
+# Configurar secretos. Los valores van SIN comillas y sin espacios alrededor
+# del "=". Ver .env.example para la descripción de cada uno.
+npx supabase secrets set CLOUDFLARE_TURNSTILE_SECRET=...
+npx supabase secrets set RESEND_API_KEY=...
+npx supabase secrets set NOTIFICATION_EMAIL=...
+npx supabase secrets set SITE_URL=https://juriscorppanama.com
 
-# Deploy
-supabase functions deploy submit-lead
+# Remitente de las notificaciones. El dominio debe estar VERIFICADO en Resend.
+# Un subdominio verificado NO cubre el dominio raíz: send.juriscorppanama.com
+# y juriscorppanama.com son dominios distintos para Resend.
+npx supabase secrets set RESEND_FROM=...
+
+# SIN el prefijo SUPABASE_: está reservado por la plataforma y la CLI rechaza
+# cualquier secreto que lo lleve. Por eso la función lee SERVICE_ROLE_KEY.
+npx supabase secrets set SERVICE_ROLE_KEY=...
+
+# Deploy. Lee supabase/config.toml, que fija verify_jwt = false para esta
+# función: es un endpoint público y el gateway debe dejar pasar peticiones
+# sin autenticar. No lo cambies sin leer el comentario de ese archivo.
+npx supabase functions deploy submit-lead
 ```
+
+> **Antes del primer deploy tras un cambio de esquema:** aplica las migraciones
+> pendientes en el SQL Editor de Supabase. La función escribe en columnas que
+> deben existir previamente, o fallará al registrar el estado de notificación.
 
 ### 6. Configurar el frontend
 
@@ -94,7 +111,7 @@ En `index.html`, actualizar el bloque `NELSON_CONFIG`:
 window.NELSON_CONFIG = {
   EDGE_FUNCTION_URL: 'https://azraryuqcqibppexuiwi.supabase.co/functions/v1/submit-lead',
   TURNSTILE_SITE_KEY: 'YOUR_SITE_KEY',
-  WHATSAPP_NUMBER: '5076673035',
+  WHATSAPP_NUMBER: '50766730357',
 };
 ```
 

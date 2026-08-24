@@ -1,0 +1,95 @@
+# ============================================================
+# Juriscorp S.C. — Latido de Supabase (REDUNDANCIA SECUNDARIA)
+# ============================================================
+#
+# Qué resuelve: en el plan gratuito, Supabase pausa el proyecto tras
+# 7 días sin actividad. Con el proyecto pausado deja de funcionar el
+# formulario, el panel y cualquier tarea programada DENTRO de Postgres
+# (pg_cron no puede impedir su propia pausa). El latido tiene que venir
+# de fuera del proyecto.
+#
+# ------------------------------------------------------------
+# ESTE NO ES EL MECANISMO PRIMARIO
+# ------------------------------------------------------------
+# El latido principal es un cron externo en cron-job.org, independiente
+# de este repositorio. Ver docs/KEEP-ALIVE.md.
+#
+# Motivo: GitHub DESACTIVA AUTOMÁTICAMENTE los workflows programados
+# tras 60 días sin actividad en el repositorio, y las ejecuciones
+# programadas NO cuentan como actividad — solo cuentan commits, pushes
+# y acciones manuales. Es decir: si el repositorio queda quieto 60 días,
+# este workflow se apaga solo y reproduce exactamente el fallo que
+# pretende evitar, solo que más tarde y de forma más silenciosa.
+#
+# GitHub avisa por email antes de desactivarlo. Para reactivarlo:
+# pestaña Actions -> este workflow -> "Enable workflow". Cualquier commit
+# al repositorio reinicia el contador de 60 días.
+#
+# Mantener ambos es deliberado: si uno falla, el otro cubre.
+# ------------------------------------------------------------
+#
+# Secrets requeridos (Settings -> Secrets and variables -> Actions):
+#   SUPABASE_URL              https://<ref>.supabase.co
+#   SUPABASE_PUBLISHABLE_KEY  clave publicable / anon
+#
+# NUNCA usar aquí la service_role: ignora RLS por completo y este
+# repositorio es público. La clave publicable basta — RLS devuelve una
+# lista vacía, pero la consulta llega igualmente a Postgres, que es lo
+# que cuenta como actividad.
+# ============================================================
+
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Lunes, miércoles y viernes a las 07:23 UTC (02:23 Panamá).
+    # Intervalo máximo de 3 días frente a una pausa a los 7.
+    # Horario desfasado respecto al cron externo (que corre a diario)
+    # para que ambos no coincidan en la misma ventana.
+    # El minuto no es redondo a propósito: el cron de GitHub se
+    # congestiona y se retrasa en las horas en punto.
+    - cron: '23 7 * * 1,3,5'
+  # Permite dispararlo a mano tras una pausa o para probar la config.
+  workflow_dispatch:
+
+# Sin permisos sobre el repositorio: este job solo hace una petición saliente.
+permissions: {}
+
+jobs:
+  ping:
+    name: Ping Supabase REST
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Consulta trivial a la API REST
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SUPABASE_URL}" ] || [ -z "${SUPABASE_PUBLISHABLE_KEY}" ]; then
+            echo "::error::Faltan los secrets SUPABASE_URL o SUPABASE_PUBLISHABLE_KEY."
+            exit 1
+          fi
+
+          # -s y sin -v: los secrets se enmascaran en los logs, pero no
+          # conviene volcar cabeceras de la petición de todos modos.
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
+            --max-time 30 \
+            --retry 2 --retry-delay 5 \
+            -H "apikey: ${SUPABASE_PUBLISHABLE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_PUBLISHABLE_KEY}" \
+            "${SUPABASE_URL}/rest/v1/leads?select=id&limit=1")
+
+          echo "HTTP ${STATUS}"
+
+          # 200 con lista vacía es el resultado esperado: RLS no concede
+          # SELECT al rol anónimo, pero la consulta sí se ejecuta.
+          if [ "${STATUS}" != "200" ]; then
+            echo "::error::Supabase respondió ${STATUS} en lugar de 200. El proyecto puede estar pausado, caído, o la clave puede haber sido rotada."
+            exit 1
+          fi
+
+          echo "Proyecto activo."
