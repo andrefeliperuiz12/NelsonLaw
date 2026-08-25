@@ -1,0 +1,645 @@
+/* ============================================================
+   Juriscorp S.C. — Páginas de área de práctica
+   ============================================================
+   Hereda los tokens de main.css (navy/gold). Aquí sólo va lo
+   propio de una página de área: portada editorial, listado de
+   servicios, bloque institucional, preguntas frecuentes y
+   navegación cruzada entre las tres áreas.
+
+   DIRECCIÓN VISUAL: editorial sobria. Matices de azul marino
+   como planos de profundidad, oro reservado para lo que jerarquiza
+   (numeración, filetes, acentos) y blanco para el texto que manda.
+   Nada de tarjetas uniformes: la jerarquía la marcan la escala
+   tipográfica y el aire, no las cajas.
+
+   LAS PREGUNTAS FRECUENTES USAN <details>/<summary>, sin JavaScript.
+   Es accesible por teclado de serie, funciona sin JS y no añade
+   nada que impida poner la CSP en enforce.
+   ============================================================ */
+
+/* --- MATICES DE AZUL PROPIOS DE ESTAS PÁGINAS --- */
+:root {
+  --navy-deep: #0a1420;
+  --navy-raised: #13202f;
+  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-gold: rgba(201, 168, 76, 0.22);
+}
+
+/* ============================================================
+   PORTADA DEL ÁREA
+   ============================================================ */
+
+.area-hero {
+  position: relative;
+  padding: 10rem 1.5rem 4.5rem;
+  background:
+    radial-gradient(ellipse 70% 55% at 72% 0%, rgba(201, 168, 76, 0.10), transparent 68%),
+    linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 100%);
+  border-bottom: 1px solid var(--hairline-gold);
+  overflow: hidden;
+}
+
+/* Filete vertical de oro que ancla la numeración del área. */
+.area-hero::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(1120px, calc(100% - 3rem));
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold) 0%, transparent 45%);
+}
+
+.area-hero-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 940px) {
+  .area-hero-inner {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 4rem;
+    align-items: end;
+  }
+}
+
+.area-breadcrumb {
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  color: var(--gray);
+  margin-bottom: 1.6rem;
+}
+
+.area-breadcrumb a {
+  color: var(--gray);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.area-breadcrumb a:hover,
+.area-breadcrumb a:focus-visible {
+  color: var(--gold-light);
+}
+
+.area-breadcrumb span {
+  margin: 0 0.5rem;
+  color: rgba(201, 168, 76, 0.5);
+}
+
+.area-eyebrow {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.area-eyebrow-num {
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 1.6rem + 3.4vw, 4.4rem);
+  font-weight: 300;
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gold);
+  letter-spacing: -0.02em;
+}
+
+.area-eyebrow-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.area-hero h1 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.4rem, 1.2rem + 4.4vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: var(--white);
+}
+
+.area-hero h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.area-lead {
+  margin-top: 1.7rem;
+  max-width: 60ch;
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.12rem);
+  line-height: 1.72;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+/* --- Ficha de credencial --- */
+.area-credential {
+  position: relative;
+  padding: 1.6rem 1.5rem;
+  background: var(--navy-raised);
+  border: 1px solid var(--hairline);
+  border-top: 2px solid var(--gold);
+  border-radius: 2px;
+}
+
+.area-credential-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.7rem;
+}
+
+.area-credential-value {
+  font-family: var(--font-serif);
+  font-size: 1.32rem;
+  line-height: 1.3;
+  color: var(--white);
+  font-weight: 400;
+}
+
+.area-credential-note {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--gray);
+}
+
+/* ============================================================
+   ESTRUCTURA DE SECCIONES
+   ============================================================ */
+
+.area-section {
+  padding: clamp(4rem, 3rem + 4vw, 7rem) 1.5rem;
+}
+
+.area-section-alt {
+  background: var(--navy-deep);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.area-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.area-section-head {
+  max-width: 62ch;
+  margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+}
+
+.area-section-tag {
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.9rem;
+}
+
+.area-section-head h2 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(1.85rem, 1.3rem + 2.1vw, 2.9rem);
+  line-height: 1.16;
+  color: var(--white);
+  letter-spacing: -0.01em;
+}
+
+.area-section-head h2 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.area-section-head p {
+  margin-top: 1.2rem;
+  font-size: 0.99rem;
+  line-height: 1.75;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+/* ============================================================
+   SERVICIOS — lista editorial, no rejilla de tarjetas
+   ============================================================ */
+
+.area-services {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.area-service {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 2.5rem;
+  padding: 1.9rem 0;
+  border-bottom: 1px solid var(--hairline);
+  transition: background 0.3s ease, padding-left 0.3s ease;
+}
+
+@media (min-width: 780px) {
+  .area-service {
+    grid-template-columns: 3.5rem minmax(0, 20rem) minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0 2.5rem;
+  }
+}
+
+.area-service:hover {
+  background: rgba(201, 168, 76, 0.035);
+}
+
+@media (min-width: 780px) {
+  .area-service:hover {
+    padding-left: 0.9rem;
+  }
+}
+
+.area-service-num {
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  color: rgba(201, 168, 76, 0.65);
+  padding-top: 0.35rem;
+}
+
+.area-service h3 {
+  font-family: var(--font-serif);
+  font-size: 1.28rem;
+  font-weight: 400;
+  line-height: 1.32;
+  color: var(--white);
+}
+
+.area-service p {
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+/* ============================================================
+   BLOQUE INSTITUCIONAL — cómo se aplica en Panamá
+   ============================================================ */
+
+.area-institutions {
+  display: grid;
+  gap: 1.15rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 700px) {
+  .area-institutions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1000px) {
+  .area-institutions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.area-institution {
+  padding: 1.5rem 1.4rem;
+  background: var(--navy-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.area-institution:hover {
+  border-color: var(--hairline-gold);
+  transform: translateY(-2px);
+}
+
+.area-institution-acronym {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--gold-light);
+  line-height: 1;
+  margin-bottom: 0.55rem;
+}
+
+.area-institution h3 {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.45;
+  margin-bottom: 0.7rem;
+}
+
+.area-institution p {
+  font-size: 0.86rem;
+  line-height: 1.68;
+  color: var(--gray);
+  font-weight: 300;
+}
+
+/* --- Aviso de plazos --- */
+.area-notice {
+  margin-top: 2.5rem;
+  padding: 1.4rem 1.5rem;
+  border-left: 2px solid var(--gold);
+  background: rgba(201, 168, 76, 0.06);
+  border-radius: 0 3px 3px 0;
+}
+
+.area-notice-title {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+.area-notice p {
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+.area-notice p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   PREGUNTAS FRECUENTES — <details>, sin JavaScript
+   ============================================================ */
+
+.area-faq {
+  max-width: 76ch;
+  border-top: 1px solid var(--hairline);
+}
+
+.area-faq details {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.area-faq summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  padding: 1.35rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--white);
+  transition: color 0.25s ease;
+}
+
+/* Ocultar el triángulo por defecto en ambos motores. */
+.area-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.area-faq summary::marker {
+  content: '';
+}
+
+.area-faq summary:hover,
+.area-faq summary:focus-visible {
+  color: var(--gold-light);
+}
+
+/* Indicador propio: un signo + que gira a − al abrirse. */
+.area-faq summary::after {
+  content: '+';
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-sans);
+  font-size: 1.35rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--gold);
+  transition: transform 0.3s var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.area-faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.area-faq-answer {
+  padding: 0 0 1.5rem;
+  max-width: 66ch;
+  font-size: 0.93rem;
+  line-height: 1.78;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+.area-faq-answer p + p {
+  margin-top: 0.9rem;
+}
+
+.area-faq-answer strong {
+  color: var(--gold-pale);
+  font-weight: 500;
+}
+
+/* ============================================================
+   LLAMADA A LA ACCIÓN
+   ============================================================ */
+
+.area-cta {
+  padding: clamp(3.5rem, 3rem + 3vw, 6rem) 1.5rem;
+  background:
+    radial-gradient(ellipse 60% 100% at 50% 100%, rgba(201, 168, 76, 0.10), transparent 70%),
+    var(--navy-deep);
+  border-top: 1px solid var(--hairline-gold);
+  text-align: center;
+}
+
+.area-cta-inner {
+  max-width: 62ch;
+  margin: 0 auto;
+}
+
+.area-cta h2 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  line-height: 1.2;
+  color: var(--white);
+  margin-bottom: 1.1rem;
+}
+
+.area-cta p {
+  font-size: 0.98rem;
+  line-height: 1.72;
+  color: var(--text-body);
+  font-weight: 300;
+  margin-bottom: 2.2rem;
+}
+
+.area-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  justify-content: center;
+}
+
+.area-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.95rem 2.1rem;
+  border-radius: 2px;
+  font-size: 0.87rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: background 0.28s ease, border-color 0.28s ease, transform 0.28s ease, color 0.28s ease;
+}
+
+.area-btn-primary {
+  background: var(--gold);
+  color: var(--navy);
+  border: 1px solid var(--gold);
+  font-weight: 500;
+}
+
+.area-btn-primary:hover,
+.area-btn-primary:focus-visible {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+.area-btn-ghost {
+  background: transparent;
+  color: var(--gold-light);
+  border: 1px solid var(--hairline-gold);
+}
+
+.area-btn-ghost:hover,
+.area-btn-ghost:focus-visible {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   NAVEGACIÓN CRUZADA ENTRE ÁREAS
+   ============================================================ */
+
+.area-siblings {
+  padding: clamp(3rem, 2.5rem + 2vw, 4.5rem) 1.5rem;
+  background: var(--navy);
+}
+
+.area-siblings-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.area-siblings-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-bottom: 1.2rem;
+  margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.area-siblings-grid {
+  display: grid;
+  gap: 1.1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 760px) {
+  .area-siblings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.area-sibling {
+  display: block;
+  padding: 1.6rem 1.5rem;
+  background: var(--navy-raised);
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.area-sibling:hover,
+.area-sibling:focus-visible {
+  border-color: var(--hairline-gold);
+  transform: translateY(-3px);
+}
+
+.area-sibling-num {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: rgba(201, 168, 76, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.area-sibling-name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.42rem;
+  font-weight: 400;
+  color: var(--white);
+  margin: 0.4rem 0 0.6rem;
+  transition: color 0.3s ease;
+}
+
+.area-sibling:hover .area-sibling-name {
+  color: var(--gold-light);
+}
+
+.area-sibling-desc {
+  font-size: 0.87rem;
+  line-height: 1.65;
+  color: var(--gray);
+  font-weight: 300;
+}
+
+/* --- Descargo legal --- */
+.area-disclaimer {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--gray);
+  font-weight: 300;
+}
+
+/* ============================================================
+   MOVIMIENTO REDUCIDO
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .area-service,
+  .area-institution,
+  .area-sibling,
+  .area-btn,
+  .area-faq summary::after {
+    transition: none;
+  }
+
+  .area-service:hover,
+  .area-institution:hover,
+  .area-sibling:hover,
+  .area-btn:hover {
+    transform: none;
+    padding-left: 0;
+  }
+}
