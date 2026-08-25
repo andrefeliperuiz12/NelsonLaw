@@ -26,6 +26,80 @@
     Object.assign(CONFIG, window.NELSON_CONFIG);
   }
 
+  // --- IDIOMA ---
+  // Se lee del atributo lang del <html>, que es la fuente de verdad de la
+  // página que la persona está viendo. NO se usa navigator.language: eso
+  // refleja la configuración del navegador, no lo que hay en pantalla, y un
+  // panameño con Windows en inglés vería errores en inglés en el sitio en
+  // español.
+  var LANG = (document.documentElement.lang || 'es').toLowerCase().indexOf('en') === 0 ? 'en' : 'es';
+
+  // Los mensajes de la Edge Function llegan ya traducidos desde el servidor
+  // (ver supabase/functions/submit-lead/index.ts). Estos son sólo los que se
+  // generan en el navegador: validación en cliente y fallos de red.
+  var T = {
+    es: {
+      required: 'Este campo es requerido.',
+      minLength: function (n) { return 'Mínimo ' + n + ' caracteres.'; },
+      email: 'Correo electrónico inválido.',
+      phone: 'Número de teléfono inválido.',
+      turnstile: 'Por favor complete la verificación de seguridad.',
+      serverError: function (s) {
+        return 'Tuvimos un problema en nuestro servidor y no pudimos registrar ' +
+          'su consulta (error ' + s + '). No es un problema de su conexión. ' +
+          'Puede intentarlo en unos minutos o escribirnos por WhatsApp al 6673-0357.';
+      },
+      httpError: function (s) {
+        return 'No pudimos enviar el formulario (error ' + s + '). ' +
+          'Puede intentarlo de nuevo o escribirnos por WhatsApp al 6673-0357.';
+      },
+      networkError: 'No pudimos conectar con el servidor. Verifique su ' +
+        'conexión a internet e intente de nuevo, o escríbanos por WhatsApp al 6673-0357.'
+    },
+    en: {
+      required: 'This field is required.',
+      minLength: function (n) { return 'Minimum ' + n + ' characters.'; },
+      email: 'Invalid email address.',
+      phone: 'Invalid phone number.',
+      turnstile: 'Please complete the security verification.',
+      serverError: function (s) {
+        return 'We had a problem on our server and could not record your enquiry ' +
+          '(error ' + s + '). This is not a problem with your connection. Please ' +
+          'try again in a few minutes or message us on WhatsApp at +507 6673-0357.';
+      },
+      httpError: function (s) {
+        return 'We could not submit the form (error ' + s + '). ' +
+          'Please try again or message us on WhatsApp at +507 6673-0357.';
+      },
+      networkError: 'We could not reach the server. Please check your internet ' +
+        'connection and try again, or message us on WhatsApp at +507 6673-0357.'
+    }
+  }[LANG];
+
+  // La Edge Function decide en qué idioma responde a partir de este parámetro.
+  // Va en la URL y no en el cuerpo porque el corte por exceso de peticiones se
+  // responde antes de que el servidor llegue a leer el cuerpo.
+  function edgeUrl() {
+    if (!CONFIG.EDGE_FUNCTION_URL) return '';
+    return CONFIG.EDGE_FUNCTION_URL +
+      (CONFIG.EDGE_FUNCTION_URL.indexOf('?') === -1 ? '?' : '&') +
+      'lang=' + LANG;
+  }
+
+  // --- BOTONES DE RECARGA ---
+  // Sustituye a onclick="location.reload()" en el mensaje de error del
+  // formulario. Un atributo onclick= lo bloquea SIEMPRE una CSP en modo
+  // enforce, y los hashes no sirven para manejadores de evento: sólo
+  // 'unsafe-inline', que vacía de sentido la cabecera. Con delegación queda
+  // fuera del HTML y no estorba. Ver el comentario de _headers.
+  function initReloadButtons() {
+    document.querySelectorAll('[data-reload]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        location.reload();
+      });
+    });
+  }
+
   // --- MOBILE NAVIGATION ---
   function initNavigation() {
     const toggle = document.getElementById('navToggle');
@@ -112,19 +186,19 @@
 
     if (rules.required && !value) {
       if (group) group.classList.add('error');
-      if (errorEl) errorEl.textContent = 'Este campo es requerido.';
+      if (errorEl) errorEl.textContent = T.required;
       return false;
     }
 
     if (rules.minLength && value.length < rules.minLength) {
       if (group) group.classList.add('error');
-      if (errorEl) errorEl.textContent = 'Mínimo ' + rules.minLength + ' caracteres.';
+      if (errorEl) errorEl.textContent = T.minLength(rules.minLength);
       return false;
     }
 
     if (rules.email && value && !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value)) {
       if (group) group.classList.add('error');
-      if (errorEl) errorEl.textContent = 'Correo electrónico inválido.';
+      if (errorEl) errorEl.textContent = T.email;
       return false;
     }
 
@@ -132,7 +206,7 @@
       var digits = value.replace(/\D/g, '');
       if (digits.length < 7) {
         if (group) group.classList.add('error');
-        if (errorEl) errorEl.textContent = 'Número de teléfono inválido.';
+        if (errorEl) errorEl.textContent = T.phone;
         return false;
       }
     }
@@ -170,7 +244,7 @@
     if (!turnstileToken) {
       var tsError = document.getElementById('turnstileError');
       if (tsError) {
-        tsError.textContent = 'Por favor complete la verificación de seguridad.';
+        tsError.textContent = T.turnstile;
         tsError.style.display = 'block';
       }
       valid = false;
@@ -216,7 +290,7 @@
           consent: document.getElementById('consent').checked,
         };
 
-        var response = await fetch(CONFIG.EDGE_FUNCTION_URL, {
+        var response = await fetch(edgeUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -246,17 +320,14 @@
         } else {
           var message;
           if (result && result.error) {
-            // Error de negocio: la Edge Function ya devuelve el mensaje en
-            // español y listo para mostrar (validación, rate limit, Turnstile).
+            // Error de negocio: la Edge Function ya devuelve el mensaje en el
+            // idioma de la página y listo para mostrar (validación, rate
+            // limit, Turnstile). El idioma se le indica con ?lang= en edgeUrl().
             message = result.error;
           } else if (response.status >= 500) {
-            message = 'Tuvimos un problema en nuestro servidor y no pudimos registrar ' +
-                      'su consulta (error ' + response.status + '). No es un problema ' +
-                      'de su conexión. Puede intentarlo en unos minutos o escribirnos ' +
-                      'por WhatsApp al 6673-0357.';
+            message = T.serverError(response.status);
           } else {
-            message = 'No pudimos enviar el formulario (error ' + response.status + '). ' +
-                      'Puede intentarlo de nuevo o escribirnos por WhatsApp al 6673-0357.';
+            message = T.httpError(response.status);
           }
           if (errorBanner) {
             errorBanner.textContent = message;
@@ -268,9 +339,7 @@
         // completarse (sin conexión, DNS, CORS, conexión cortada). Un error
         // HTTP del servidor NO llega aquí; se maneja arriba.
         if (errorBanner) {
-          errorBanner.textContent = 'No pudimos conectar con el servidor. Verifique su ' +
-                                    'conexión a internet e intente de nuevo. Si el problema ' +
-                                    'persiste, escríbanos por WhatsApp al 6673-0357.';
+          errorBanner.textContent = T.networkError;
           errorBanner.classList.add('visible');
         }
       } finally {
@@ -312,5 +381,6 @@
     initScrollReveal();
     initForm();
     initFooterYear();
+    initReloadButtons();
   });
 })();

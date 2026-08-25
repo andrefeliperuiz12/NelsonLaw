@@ -216,6 +216,77 @@ async function sendNotificationEmail(lead: {
   }
 }
 
+// ============================================================================
+// MENSAJES DE USUARIO EN DOS IDIOMAS
+// ============================================================================
+// El sitio tiene versión en inglés bajo /en/. Un visitante que rellena el
+// formulario en inglés no puede recibir un error en español: parece un fallo
+// del sitio y se pierde el lead.
+//
+// EL IDIOMA VIAJA EN LA URL, NO EN EL CUERPO. Es deliberado: el corte por
+// exceso de peticiones se responde ANTES de leer el cuerpo de la petición
+// (justamente para no gastar recursos en un cliente abusivo), así que en ese
+// punto el JSON todavía no se ha parseado. La query string sí está disponible
+// desde el primer instante.
+//
+// Al añadir un mensaje nuevo hay que darlo en los DOS idiomas o el objeto
+// deja de ser válido para el tipo Mensajes.
+type Idioma = "es" | "en";
+
+type Mensajes = Record<
+  | "rateLimit" | "consent" | "turnstileRequired" | "serverConfig"
+  | "turnstileFailed" | "requiredFields" | "nameTooShort" | "phoneInvalid"
+  | "emailInvalid" | "areaInvalid" | "summaryTooShort" | "saveFailed"
+  | "unexpected",
+  string
+>;
+
+const MENSAJES: Record<Idioma, Mensajes> = {
+  es: {
+    rateLimit: "Demasiadas solicitudes. Por favor espere un momento.",
+    consent: "Debe aceptar la política de privacidad.",
+    turnstileRequired: "Verificación de seguridad requerida. Por favor recargue la página.",
+    serverConfig: "Error de configuración del servidor.",
+    turnstileFailed: "Verificación de seguridad fallida. Por favor intente de nuevo.",
+    requiredFields: "Por favor complete todos los campos requeridos.",
+    nameTooShort: "El nombre debe tener al menos 2 caracteres.",
+    phoneInvalid: "Número de teléfono inválido.",
+    emailInvalid: "Correo electrónico inválido.",
+    areaInvalid: "Área legal no válida.",
+    summaryTooShort: "El resumen del caso debe tener al menos 10 caracteres.",
+    saveFailed: "No se pudo guardar su consulta. Por favor intente de nuevo.",
+    unexpected: "Error inesperado. Por favor intente de nuevo más tarde.",
+  },
+  en: {
+    rateLimit: "Too many requests. Please wait a moment.",
+    consent: "You must accept the privacy policy.",
+    turnstileRequired: "Security verification required. Please reload the page.",
+    serverConfig: "Server configuration error.",
+    turnstileFailed: "Security verification failed. Please try again.",
+    requiredFields: "Please complete all required fields.",
+    nameTooShort: "Name must be at least 2 characters long.",
+    phoneInvalid: "Invalid phone number.",
+    emailInvalid: "Invalid email address.",
+    areaInvalid: "Invalid practice area.",
+    summaryTooShort: "The case summary must be at least 10 characters long.",
+    saveFailed: "We could not save your enquiry. Please try again.",
+    unexpected: "Unexpected error. Please try again later.",
+  },
+};
+
+// Cualquier valor distinto de "en" cae en español, que es el idioma principal
+// del despacho. No se usa Accept-Language: lo manda el navegador según su
+// configuración, no según la página que la persona está leyendo, y un
+// panameño con Windows en inglés recibiría mensajes en inglés en el sitio
+// en español.
+function resolverIdioma(url: string): Idioma {
+  try {
+    return new URL(url).searchParams.get("lang") === "en" ? "en" : "es";
+  } catch {
+    return "es";
+  }
+}
+
 // Main handler
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -231,6 +302,9 @@ Deno.serve(async (req) => {
     );
   }
 
+  const idioma = resolverIdioma(req.url);
+  const msg = MENSAJES[idioma];
+
   try {
     // Rate limiting by IP
     const clientIP =
@@ -242,7 +316,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Demasiadas solicitudes. Por favor espere un momento.",
+          error: msg.rateLimit,
         }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -257,7 +331,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Debe aceptar la política de privacidad.",
+          error: msg.consent,
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -268,7 +342,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Verificación de seguridad requerida. Por favor recargue la página.",
+          error: msg.turnstileRequired,
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -280,7 +354,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Error de configuración del servidor.",
+          error: msg.serverConfig,
         }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -301,7 +375,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Verificación de seguridad fallida. Por favor intente de nuevo.",
+          error: msg.turnstileFailed,
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -312,7 +386,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Por favor complete todos los campos requeridos.",
+          error: msg.requiredFields,
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -330,28 +404,28 @@ Deno.serve(async (req) => {
     // 5. Validate field formats
     if (cleanName.length < 2) {
       return new Response(
-        JSON.stringify({ success: false, error: "El nombre debe tener al menos 2 caracteres." }),
+        JSON.stringify({ success: false, error: msg.nameTooShort }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     if (!isValidPhone(cleanPhone)) {
       return new Response(
-        JSON.stringify({ success: false, error: "Número de teléfono inválido." }),
+        JSON.stringify({ success: false, error: msg.phoneInvalid }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     if (cleanEmail && !isValidEmail(cleanEmail)) {
       return new Response(
-        JSON.stringify({ success: false, error: "Correo electrónico inválido." }),
+        JSON.stringify({ success: false, error: msg.emailInvalid }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     if (!VALID_LEGAL_AREAS.includes(cleanArea)) {
       return new Response(
-        JSON.stringify({ success: false, error: "Área legal no válida." }),
+        JSON.stringify({ success: false, error: msg.areaInvalid }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -360,7 +434,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "El resumen del caso debe tener al menos 10 caracteres.",
+          error: msg.summaryTooShort,
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -373,7 +447,7 @@ Deno.serve(async (req) => {
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error("Supabase credentials not configured");
       return new Response(
-        JSON.stringify({ success: false, error: "Error de configuración del servidor." }),
+        JSON.stringify({ success: false, error: msg.serverConfig }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -399,7 +473,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "No se pudo guardar su consulta. Por favor intente de nuevo.",
+          error: msg.saveFailed,
         }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -464,7 +538,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: "Error inesperado. Por favor intente de nuevo más tarde.",
+        error: msg.unexpected,
       }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
