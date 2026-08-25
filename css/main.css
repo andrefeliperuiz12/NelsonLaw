@@ -71,7 +71,16 @@ ol {
 }
 
 /* --- NAVIGATION --- */
-nav {
+/* Acotado a #navbar y NO al elemento <nav>.
+   Con el selector de elemento, estas reglas alcanzaban a cualquier <nav> del
+   documento. Las páginas de área llevan un segundo <nav class="area-breadcrumb">
+   para la miga de pan —marcado correcto y bueno para accesibilidad— que acababa
+   recibiendo position:fixed, top:0, width:100%, fondo y borde dorado. Resultado:
+   una segunda barra pegada al borde superior, encima de la real. Como sólo
+   contiene "Inicio / Derecho Penal", se veía como media barra solapada.
+   Comprobado en las 6 páginas de área, español e inglés.
+   NO vuelvas a poner `nav {` a secas aquí. */
+#navbar {
   position: fixed;
   top: 0;
   width: 100%;
@@ -87,7 +96,7 @@ nav {
   transition: all 0.3s ease;
 }
 
-nav.scrolled {
+#navbar.scrolled {
   padding: 0.8rem 4rem;
   background: rgba(13, 27, 42, 0.97);
 }
@@ -106,7 +115,7 @@ nav.scrolled {
   transition: opacity 0.3s;
 }
 
-nav.scrolled .nav-logo-img {
+#navbar.scrolled .nav-logo-img {
   height: 36px;
 }
 
@@ -1357,11 +1366,11 @@ footer {
 
 /* --- RESPONSIVE --- */
 @media (max-width: 900px) {
-  nav {
+  #navbar {
     padding: 1.2rem 2rem;
   }
 
-  nav.scrolled {
+  #navbar.scrolled {
     padding: 0.8rem 2rem;
   }
 
@@ -1384,6 +1393,41 @@ footer {
 
   .nav-toggle {
     display: flex;
+  }
+
+  /* --- NAVEGACIÓN MÓVIL EN LAS PÁGINAS SECUNDARIAS ---
+     El desplegable de arriba depende de un botón hamburguesa y de
+     js/main.js, y SÓLO las dos portadas (index.html y en/index.html) tienen
+     ambos. Las otras diez páginas se quedaban con .nav-links en display:none
+     y sin nada que lo abriera: en un teléfono no había forma de navegar.
+
+     Esas diez llevan class="navbar" en el <nav> y las dos portadas no, así
+     que la clase sirve para distinguirlas sin tocar el marcado. Aquí el menú
+     se muestra siempre, en fila compacta que envuelve si hace falta.
+
+     Si algún día se le añade la hamburguesa a estas páginas, hay que quitar
+     esta regla o se verán las dos cosas a la vez. */
+  #navbar.navbar .nav-links {
+    display: flex;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    background: none;
+    border-top: none;
+    padding: 0;
+    gap: 0.5rem 1rem;
+    max-width: 70%;
+  }
+
+  #navbar.navbar .nav-links a {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+  }
+
+  #navbar.navbar .nav-cta {
+    padding: 0.4rem 0.9rem;
   }
 
   /* --- HERO MOBILE --- */
@@ -1522,6 +1566,21 @@ footer {
 }
 
 @media (max-width: 480px) {
+
+  /* En un teléfono estrecho, el menú compacto de las páginas secundarias
+     ocuparía dos o tres filas y empujaría la barra hacia abajo, tapando el
+     inicio del contenido. Se dejan sólo la llamada a la acción y el
+     conmutador de idioma, que es lo que de verdad se pulsa desde el móvil.
+     Los enlaces de sección siguen accesibles desde el pie. */
+  #navbar.navbar .nav-links>li:not(:has(.nav-cta)):not(:has(.nav-lang)) {
+    display: none;
+  }
+
+  #navbar.navbar .nav-links {
+    max-width: none;
+    gap: 0.5rem;
+  }
+
   .hero-content {
     padding: 7rem 1.5rem 2rem;
   }
@@ -1655,4 +1714,38 @@ footer {
   .service-link:hover::after {
     transform: none;
   }
+}
+
+/* --- CONMUTADOR DE IDIOMA ---
+   El sitio tiene versión en inglés bajo /en/. El conmutador apunta SIEMPRE a
+   la página equivalente, no a la portada del otro idioma: mandar a alguien que
+   lee sobre derecho penal a la home en inglés es perderlo. Cada página declara
+   su pareja en el href y en las etiquetas hreflang del <head>. */
+.nav-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 2px;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.14em !important;
+  color: var(--gray) !important;
+  transition: color 0.3s, border-color 0.3s, background 0.3s !important;
+}
+
+.nav-lang:hover,
+.nav-lang:focus-visible {
+  color: var(--gold-light) !important;
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.07);
+}
+
+.nav-lang-current {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.nav-lang-sep {
+  color: rgba(201, 168, 76, 0.35);
 }
