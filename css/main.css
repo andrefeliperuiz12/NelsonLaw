@@ -1605,3 +1605,54 @@ footer {
     width: 36px;
   }
 }
+/* --- ENLACE A LA PÁGINA DE ÁREA ---
+   Las tres áreas principales tienen página propia. El enlace va dentro de la
+   tarjeta y no envolviéndola: .service-card ya tiene ::after y transiciones
+   propias, y convertirla en <a> obligaría a rehacerlas. */
+.service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--gold-light);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(228, 201, 126, 0.3);
+  padding-bottom: 0.25rem;
+  transition: color 0.3s, border-color 0.3s, gap 0.3s;
+}
+
+.service-link::after {
+  content: '→';
+  font-size: 0.95em;
+  transition: transform 0.3s;
+}
+
+.service-link:hover,
+.service-link:focus-visible {
+  color: var(--gold-pale);
+  border-color: var(--gold);
+  gap: 0.7rem;
+}
+
+.service-link:hover::after,
+.service-link:focus-visible::after {
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .service-link,
+  .service-link::after {
+    transition: none;
+  }
+
+  .service-link:hover {
+    gap: 0.45rem;
+  }
+
+  .service-link:hover::after {
+    transform: none;
+  }
+}
