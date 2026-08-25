@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<!--
+  Cada entrada declara sus alternativas de idioma. Google exige
+  RECIPROCIDAD: si la página española apunta a la inglesa, la inglesa tiene que
+  apuntar de vuelta, y además cada una debe declararse a sí misma. Si falta
+  cualquiera de esas tres etiquetas en un par, Google ignora el emparejamiento
+  entero y trata las dos páginas como no relacionadas.
+
+  Las URL van SIN extensión .html porque Netlify tiene pretty_urls activado
+  (ver netlify.toml) y es la forma a la que apuntan los enlaces internos y los
+  canonical de cada página.
+
+  Al añadir una página hay que darla de alta AQUÍ y en las etiquetas hreflang
+  del <head> de las DOS versiones.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
   <url>
     <loc>https://juriscorppanama.com/</loc>
-    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/" />
+    <lastmod>2026-08-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -10,28 +29,95 @@
       <image:title>Juriscorp S.C. Law Firm</image:title>
     </image:image>
   </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/derecho-administrativo</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/derecho-administrativo" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/administrative-law" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/derecho-administrativo" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/en/administrative-law</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/derecho-administrativo" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/administrative-law" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/derecho-administrativo" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/derecho-tributario</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/derecho-tributario" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/tax-law" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/derecho-tributario" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/en/tax-law</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/derecho-tributario" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/tax-law" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/derecho-tributario" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/derecho-penal</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/derecho-penal" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/criminal-law" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/derecho-penal" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://juriscorppanama.com/en/criminal-law</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/derecho-penal" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/criminal-law" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/derecho-penal" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <url>
     <loc>https://juriscorppanama.com/privacidad</loc>
-    <lastmod>2026-08-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/privacidad" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/privacidad" />
+    <lastmod>2026-08-25</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
   <url>
-    <loc>https://juriscorppanama.com/derecho-administrativo</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://juriscorppanama.com/en/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://juriscorppanama.com/privacidad" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/privacidad" />
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
-  <url>
-    <loc>https://juriscorppanama.com/derecho-tributario</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://juriscorppanama.com/derecho-penal</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
+
 </urlset>

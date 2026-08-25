@@ -20,6 +20,13 @@ https://nelsonruiz-asociados.netlify.app/*  https://juriscorppanama.com/:splat  
 /js/*        /js/:splat  200
 /assets/*    /assets/:splat 200
 
+# Rutas inexistentes DENTRO de la versión en inglés.
+#
+# Va antes del comodín general para que un visitante que teclea mal una URL de
+# /en/ reciba la página de error en su idioma y no una en español. El orden
+# importa: Netlify aplica la primera regla que casa.
+/en/* /en/404.html 404
+
 # Fallback para rutas inexistentes.
 #
 # ANTES ERA:  /* /index.html 200

@@ -19,6 +19,14 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://juriscorppanama.com/" />
 
+  <!-- hreflang: apunta a la página EQUIVALENTE en el otro idioma, no a su
+       portada. x-default va al español, idioma principal del despacho. Las
+       tres etiquetas deben existir también en la página inglesa, o Google
+       ignora el emparejamiento. -->
+  <link rel="alternate" hreflang="es" href="https://juriscorppanama.com/" />
+  <link rel="alternate" hreflang="en" href="https://juriscorppanama.com/en/" />
+  <link rel="alternate" hreflang="x-default" href="https://juriscorppanama.com/" />
+
   <!-- Favicon. Antes las tres etiquetas apuntaban al mismo fichero de 638x638
        y 57 KB, incluida la de 16x16. Ahora cada una recibe su tamaño real. -->
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
@@ -83,7 +91,10 @@
       {"@type": "Country", "name": "Panamá"},
       {"@type": "AdministrativeArea", "name": "Clientes internacionales con asuntos conectados con Panamá"}
     ],
-    "availableLanguage": {"@type": "Language", "name": "Español", "alternateName": "es"},
+    "availableLanguage": [
+      {"@type": "Language", "name": "Español", "alternateName": "es"},
+      {"@type": "Language", "name": "English", "alternateName": "en"}
+    ],
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Servicios Legales",
@@ -105,7 +116,7 @@
       "jobTitle": "Abogado",
       "alumniOf": {"@type": "CollegeOrUniversity", "name": "Universidad de Panamá"}
     },
-    "privacyPolicy": "https://juriscorppanama.com/privacidad.html"
+    "privacyPolicy": "https://juriscorppanama.com/privacidad"
   }
   </script>
 
@@ -142,6 +153,11 @@
       <li><a href="#clientes">Clientes</a></li>
       <li><a href="#contacto">Contacto</a></li>
       <li><a href="#contacto" class="nav-cta">Consultar Ahora</a></li>
+      <li>
+        <a href="/en/" class="nav-lang" hreflang="en" lang="en">
+          <span class="nav-lang-current">ES</span><span class="nav-lang-sep">/</span>EN
+        </a>
+      </li>
     </ul>
     <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
       <span></span><span></span><span></span>
@@ -580,7 +596,10 @@
                   No se pudo enviar su consulta. Por favor intente de nuevo o contáctenos
                   directamente por WhatsApp o teléfono.
                 </p>
-                <button type="button" class="btn-primary" onclick="location.reload()">Intentar de Nuevo</button>
+                <!-- data-reload en vez de onclick="location.reload()": un atributo
+                     onclick lo bloquea siempre una CSP en enforce y los hashes no
+                     sirven para manejadores de evento. Lo cablea js/main.js. -->
+                <button type="button" class="btn-primary" data-reload>Intentar de Nuevo</button>
               </div>
             </form>
           </div>
