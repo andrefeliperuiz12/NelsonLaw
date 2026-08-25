@@ -7,7 +7,10 @@
   <!--Google Search-->
   <meta name="google-site-verification" content="8-sPork-cOG7EglrAbzQXmGgwsCFtvbjZh-hrUz0yu0" />
 
-  <title> Juriscorp S.C. – Firma de Abogados en Panamá | Derecho Administrativo, Tributario y Penal</title>
+  <!-- 61 caracteres. El anterior tenía 90 y Google truncaba la cola en el
+       resultado de búsqueda, además de un espacio suelto antes de "Juriscorp".
+       Si lo alargas, comprueba que sigue por debajo de ~60. -->
+  <title>Juriscorp S.C. — Abogados en Panamá | Administrativo y Penal</title>
   <meta name="description"
     content="Firma de abogados en Panamá con más de 30 años de experiencia. Especialistas en Derecho Administrativo, Tributario y Penal. Consulta inicial personalizada." />
   <meta name="keywords"
@@ -16,44 +19,71 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://juriscorppanama.com/" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/Favicon_Chet.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/Favicon_Chet.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/Favicon_Chet.png" />
+  <!-- Favicon. Antes las tres etiquetas apuntaban al mismo fichero de 638x638
+       y 57 KB, incluida la de 16x16. Ahora cada una recibe su tamaño real. -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon-180.png" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Juriscorp S.C." />
   <meta property="og:url" content="https://juriscorppanama.com/" />
-  <meta property="og:title" content="Juriscorp S.C. – Firma de Abogados en Panamá" />
+  <meta property="og:title" content="Juriscorp S.C. — Abogados en Panamá" />
   <meta property="og:description"
     content="Más de 30 años de experiencia jurídica. Especialistas en Derecho Administrativo, Tributario y Penal. Atención a clientes nacionales y extranjeros con asuntos en Panamá." />
-  <meta property="og:image" content="https://juriscorppanama.com/assets/img/Square_LOGO.png" />
+  <meta property="og:image" content="https://juriscorppanama.com/assets/img/square-logo-og.png" />
+  <!-- Declarar las dimensiones evita que la vista previa aparezca vacía en el
+       primer compartido, antes de que el rastreador llegue a descargar la
+       imagen. Son las reales del fichero: 600x600. -->
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta property="og:image:alt" content="Logotipo de Juriscorp S.C., firma de abogados en Ciudad de Panamá" />
   <meta property="og:locale" content="es_PA" />
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Juriscorp S.C. – Firma de Abogados en Panamá" />
+  <!-- "summary" y no "summary_large_image" A PROPÓSITO: la imagen es un
+       logotipo cuadrado de 600x600. La tarjeta grande espera una proporción
+       cercana a 2:1 y recorta los lados, decapitando el logo. Si algún día se
+       diseña una imagen social de 1200x630, entonces sí conviene volver a
+       "summary_large_image" y apuntar ambos og:image y twitter:image a ella. -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Juriscorp S.C. — Abogados en Panamá" />
   <meta name="twitter:description"
     content="Especialistas en Derecho Administrativo, Tributario y Penal. Más de 30 años de trayectoria en Panamá." />
-  <meta name="twitter:image" content="https://juriscorppanama.com/assets/img/Square_LOGO.png" />
+  <meta name="twitter:image" content="https://juriscorppanama.com/assets/img/square-logo-og.png" />
+  <meta name="twitter:image:alt" content="Logotipo de Juriscorp S.C., firma de abogados en Ciudad de Panamá" />
 
   <!-- Structured Data -->
+  <!-- El "email" era contacto@juriscorppanama.com. Comprobado el 2026-08-24:
+       el dominio NO tiene registros MX, es decir, no recibe correo. Google
+       publica esta dirección en el panel de conocimiento, así que cada persona
+       que escribiera allí recibía un rebote y el bufete nunca se enteraba.
+       Se sustituye por la que sí funciona. Cuando exista un buzón del dominio
+       propio, cámbialo aquí Y en privacidad.html. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "LegalService",
+    "@id": "https://juriscorppanama.com/#organizacion",
     "name": "Juriscorp S.C.",
     "description": "Servicios legales especializados en Panamá: Derecho Administrativo, Tributario, Penal y trámites legales para clientes nacionales y extranjeros.",
     "url": "https://juriscorppanama.com",
+    "logo": "https://juriscorppanama.com/assets/img/square-logo-og.png",
+    "image": "https://juriscorppanama.com/assets/img/square-logo-og.png",
     "telephone": "+507-6673-0357",
-    "email": "contacto@juriscorppanama.com",
+    "email": "nelsonhruiz18@gmail.com",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "PA",
-      "addressLocality": "Ciudad de Panamá",
+      "addressLocality": "Ancón",
       "addressRegion": "Panamá"
     },
-    "areaServed": "Panama",
+    "areaServed": [
+      {"@type": "Country", "name": "Panamá"},
+      {"@type": "AdministrativeArea", "name": "Clientes internacionales con asuntos conectados con Panamá"}
+    ],
+    "availableLanguage": {"@type": "Language", "name": "Español", "alternateName": "es"},
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
       "name": "Servicios Legales",
@@ -63,24 +93,29 @@
         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Derecho Penal"}},
         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Derecho Migratorio"}},
         {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Servicios Corporativos y Comerciales"}},
-        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Trámites Legales en Panamá"}}
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Trámites Legales en Panamá"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Regularización de Tierras"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Asuntos Inmobiliarios y Due Diligence"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Poderes, Registro Público y Sociedades"}}
       ]
     },
     "founder": {
       "@type": "Person",
       "name": "Nelson Ruiz Pinilla",
       "jobTitle": "Abogado",
-      "alumniOf": "Universidad de Panamá"
-    }
+      "alumniOf": {"@type": "CollegeOrUniversity", "name": "Universidad de Panamá"}
+    },
+    "privacyPolicy": "https://juriscorppanama.com/privacidad.html"
   }
   </script>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap"
-    rel="stylesheet" />
+  <!-- Fonts — AUTO-ALOJADAS. No vuelvas a enlazar fonts.googleapis.com:
+       transmite la IP de cada visitante a Google. Ver css/fonts.css. -->
+  <link rel="preload" href="/assets/fonts/cormorant-garamond-300-latin.woff2"
+    as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/outfit-400-latin.woff2"
+    as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/css/fonts.css" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/main.css" />
@@ -94,8 +129,12 @@
   <!-- ==================== NAVIGATION ==================== -->
   <nav id="navbar">
     <a href="#inicio" class="nav-logo" id="nav-logo">
-      <img src="assets/img/Logo_JURIS.png" alt="Juriscorp S.C. — Law Firm" class="nav-logo-img" width="180"
-        height="48" />
+      <!-- 360x120 = el doble del tamaño al que se pinta (180x60 según
+           .nav-logo-img), para pantallas de densidad doble. De 183 KB a 8 KB.
+           Sin <picture>: el PNG ya es diminuto y .nav-logo es flex, donde un
+           elemento intermedio complicaría la maqueta sin ganancia real. -->
+      <img src="assets/img/logo-juris-360.png" alt="Juriscorp S.C. — Law Firm" class="nav-logo-img" width="360"
+        height="120" decoding="async" />
     </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="#servicios">Servicios</a></li>
@@ -131,8 +170,21 @@
 
     <div class="hero-visual">
       <div class="hero-photo-wrap">
-        <img src="assets/img/nelson-ruiz.jpg" alt="Nelson Ruiz Pinilla – Abogado en Panamá" class="hero-photo"
-          width="800" height="1000" loading="eager" />
+        <!-- Elemento LCP de la página. El original pesaba 622 KB; ahora el
+             navegador elige entre 18 y 40 KB según su pantalla.
+             sizes sale del CSS: .hero es una rejilla 1fr 1fr, así que la foto
+             ocupa 50vw; por debajo de 900px pasa a 100vw (main.css:1349).
+             El <img> de dentro es el respaldo para navegadores sin WebP.
+             Regenerar con: node scripts/optimizar-imagenes.js -->
+        <picture>
+          <source type="image/webp"
+            srcset="assets/img/nelson-ruiz-640.webp   640w,
+                    assets/img/nelson-ruiz-960.webp   960w,
+                    assets/img/nelson-ruiz-1280.webp 1280w"
+            sizes="(min-width: 901px) 50vw, 100vw" />
+          <img src="assets/img/nelson-ruiz-960.jpg" alt="Nelson Ruiz Pinilla – Abogado en Panamá" class="hero-photo"
+            width="960" height="961" loading="eager" fetchpriority="high" decoding="async" />
+        </picture>
         <div class="hero-photo-overlay"></div>
         <div class="hero-credential-badge">
           <div class="cred-title">Experiencia Institucional</div>
@@ -464,10 +516,17 @@
                 </div>
 
                 <!-- Consent -->
+                <!-- El enlace va DENTRO del label a propósito. Según la especificación
+                     HTML, un clic sobre contenido interactivo descendiente de un <label>
+                     no activa el control asociado, así que abrir la política no marca
+                     ni desmarca la casilla. target="_blank" evita que el visitante
+                     pierda lo que ya escribió en el formulario. -->
                 <label class="form-consent" id="consentLabel">
                   <input type="checkbox" id="consent" name="consent" required />
                   <span>
-                    Acepto que mi información sea utilizada para evaluar mi caso y contactarme.
+                    Acepto que mi información sea utilizada para evaluar mi caso y contactarme,
+                    conforme a la <a href="/privacidad.html" target="_blank"
+                      rel="noopener">Política de Privacidad</a>.
                     Toda la información será tratada con estricta confidencialidad conforme a
                     la relación abogado-cliente.
                   </span>
@@ -479,8 +538,15 @@
                   <span class="spinner"></span>
                 </button>
 
+                <!-- Antes decía "no será compartida con terceros". Era falso: los datos
+                     pasan por Supabase, Resend y Cloudflare como encargados del
+                     tratamiento. Una afirmación falsa sobre datos personales en el sitio
+                     de un bufete es exactamente lo que no puede haber. El detalle
+                     completo está en privacidad.html, apartado 5. -->
                 <p class="form-notice">
-                  🔒 Conexión segura. Su información es confidencial y no será compartida con terceros.
+                  🔒 Conexión cifrada. Su información está amparada por el secreto profesional
+                  y no se cede a nadie con fines comerciales.
+                  <a href="/privacidad.html" target="_blank" rel="noopener">Cómo tratamos sus datos</a>.
                 </p>
               </div>
 
@@ -524,7 +590,11 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
-        <img src="assets/img/Square_LOGO.png" alt="Juriscorp S.C." class="footer-logo" width="60" height="60" />
+        <!-- 120x120 = el doble de los 50x50 a los que lo pinta .footer-logo.
+             De 874 KB a 10 KB. Sigue con lazy porque está fuera de la
+             primera pantalla. -->
+        <img src="assets/img/square-logo-120.png" alt="Juriscorp S.C." class="footer-logo" width="120" height="120"
+          loading="lazy" decoding="async" />
         <div class="footer-brand-text">
           Juriscorp S.C.
           <span>Law Firm · Ciudad de Panamá</span>
@@ -534,6 +604,7 @@
         <li><a href="#servicios">Servicios</a></li>
         <li><a href="#sobre-mi">Trayectoria</a></li>
         <li><a href="#contacto">Contacto</a></li>
+        <li><a href="/privacidad.html">Privacidad</a></li>
       </ul>
       <div class="footer-copy">
         <!-- El año se actualiza desde js/main.js. El valor del span es el

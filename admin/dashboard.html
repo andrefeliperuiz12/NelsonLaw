@@ -5,15 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leads — Panel Administrativo</title>
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Fuentes auto-alojadas. Ver css/fonts.css. -->
+  <link rel="stylesheet" href="/css/fonts.css" />
   <link rel="stylesheet" href="../css/admin.css" />
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/Favicon_Chet.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/Favicon_Chet.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/Favicon_Chet.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/favicon-180.png" />
 </head>
 <body>
 
@@ -21,7 +20,12 @@
   <header class="admin-header">
     <div class="admin-header-inner">
       <a href="../" class="admin-logo">
-        <img src="../assets/img/NabVar_Logo.png" alt="Juriscorp S.C." style="height: 32px; width: auto;" />
+        <!-- Apuntaba a NabVar_Logo.png, un fichero borrado en un commit anterior:
+             el logo de esta cabecera llevaba tiempo saliendo roto. Ahora usa el
+             mismo logotipo optimizado que el sitio público. A 32px de alto y
+             proporción 3:1, ocupa 96px de ancho. -->
+        <img src="../assets/img/logo-juris-360.png" alt="Juriscorp S.C." width="96" height="32"
+          style="height: 32px; width: auto;" />
       </a>
       <div class="admin-header-right">
         <span id="userEmail" class="admin-user"></span>

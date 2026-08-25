@@ -284,6 +284,16 @@ nav.scrolled .nav-logo-img {
   justify-content: center;
 }
 
+/* <picture> introduce un elemento entre .hero-photo-wrap (que es flex) y la
+   <img>. Sin esta regla, el elemento <picture> pasaría a ser el hijo flex y la
+   imagen perdería el dimensionado. Replicamos aquí lo que antes hacía la <img>
+   directamente. */
+.hero-photo-wrap picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .hero-photo {
   width: 100%;
   height: 100%;
@@ -1089,6 +1099,21 @@ section {
   margin-top: 1rem;
   text-align: center;
   font-weight: 300;
+}
+
+/* El enlace a la política de privacidad vive aquí. Sin esta regla heredaba el
+   azul por defecto del navegador, que sobre el navy no se lee. */
+.form-notice a {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(228, 201, 126, 0.45);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.form-notice a:hover,
+.form-notice a:focus-visible {
+  text-decoration-color: var(--gold-light);
 }
 
 /* Form success/error messages */

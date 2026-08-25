@@ -47,9 +47,12 @@
 #
 # Orígenes inventariados del código real, no supuestos:
 #   challenges.cloudflare.com   Turnstile: script E iframe (index.html:89)
-#   fonts.googleapis.com        hoja de estilos de fuentes
-#   fonts.gstatic.com           ficheros de fuente
 #   cdn.jsdelivr.net            SDK de Supabase (las dos páginas de admin)
+#
+# Google Fonts YA NO APARECE, y es deliberado. Las tipografías se sirven desde
+# /assets/fonts (ver css/fonts.css). Enlazar fonts.googleapis.com transmitía la
+# IP de cada visitante a Google antes de que pudiera consentir nada. Si alguien
+# vuelve a enlazarlo, esta CSP lo bloqueará: eso es lo que se busca.
 #   azraryuqcqibppexuiwi...     REST, Auth y la Edge Function
 #
 # POR QUÉ SIGUE EN REPORT-ONLY:
@@ -83,6 +86,16 @@
 # orígenes está completo. Turnstile es el que más sorpresas suele dar.
 #
 # ------------------------------------------------------------
+# BLOQUE /assets/fonts/* — caché larga
+# ------------------------------------------------------------
+# Los ficheros de fuente no cambian nunca una vez publicados, así que se
+# cachean un año. "immutable" evita incluso la petición de revalidación.
+#
+# OJO: los nombres NO llevan hash de contenido. Si algún día regeneras las
+# fuentes con contenido distinto, RENÓMBRALAS o los navegadores servirán la
+# versión vieja durante un año. Ver docs/FONTS.md.
+
+# ------------------------------------------------------------
 # BLOQUE /admin/* — endurecido por encima del resto
 # ------------------------------------------------------------
 # El panel maneja resúmenes de casos sujetos a secreto profesional.
@@ -103,8 +116,11 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://azraryuqcqibppexuiwi.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://azraryuqcqibppexuiwi.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
 
 /admin/*
   X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: no-store, max-age=0
+
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

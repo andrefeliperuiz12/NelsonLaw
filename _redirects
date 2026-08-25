@@ -20,5 +20,21 @@ https://nelsonruiz-asociados.netlify.app/*  https://juriscorppanama.com/:splat  
 /js/*        /js/:splat  200
 /assets/*    /assets/:splat 200
 
-# Fallback
-/* /index.html 200
+# Fallback para rutas inexistentes.
+#
+# ANTES ERA:  /* /index.html 200
+#
+# Y estaba mal. Devolvía HTTP 200 con la portada para CUALQUIER dirección
+# inexistente. Comprobado en producción el 2026-08-24:
+#     /pagina-que-no-existe  ->  HTTP 200
+#
+# Eso es un "soft 404". Google lo trata como error y como contenido duplicado:
+# ve la misma portada en un número ilimitado de URLs, lo cual desperdicia
+# presupuesto de rastreo y ensucia Search Console. La regla `/* -> index.html`
+# es el patrón de las aplicaciones de una sola página con enrutado en el
+# cliente. Este sitio es estático y multipágina: no la necesita.
+#
+# Ahora devuelve un 404 de verdad, con una página propia. Netlify sólo aplica
+# esta regla cuando NO existe un fichero en esa ruta, así que las páginas y
+# recursos reales se siguen sirviendo con normalidad.
+/* /404.html 404
