@@ -1,0 +1,364 @@
+/* ============================================================
+   Juriscorp S.C. — Páginas legales
+   ============================================================
+   Hereda los tokens de main.css (navy/gold). Este fichero sólo
+   añade lo específico de documentos largos de lectura: medida de
+   línea, jerarquía de secciones, índice lateral y avisos.
+   ============================================================ */
+
+/* --- CABECERA DEL DOCUMENTO --- */
+.legal-hero {
+  padding: 9rem 1.5rem 3.5rem;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 168, 76, 0.10), transparent 70%),
+    var(--navy);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.18);
+}
+
+.legal-hero-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.legal-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.legal-hero h1 {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4rem);
+  line-height: 1.08;
+  color: var(--white);
+  letter-spacing: -0.01em;
+}
+
+.legal-meta {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+  font-size: 0.82rem;
+  color: var(--gray);
+}
+
+.legal-meta strong {
+  color: var(--gold-pale);
+  font-weight: 500;
+}
+
+/* --- MAQUETA: índice + cuerpo --- */
+.legal-layout {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 6rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 960px) {
+  .legal-layout {
+    grid-template-columns: 230px 1fr;
+    gap: 4rem;
+  }
+}
+
+/* --- ÍNDICE --- */
+.legal-toc {
+  font-size: 0.84rem;
+}
+
+@media (min-width: 960px) {
+  .legal-toc {
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+  }
+}
+
+.legal-toc-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.legal-toc ol {
+  list-style: none;
+  counter-reset: toc;
+}
+
+.legal-toc li {
+  counter-increment: toc;
+  margin-bottom: 0.15rem;
+}
+
+.legal-toc a {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.4rem 0.5rem 0.4rem 0;
+  color: var(--gray);
+  text-decoration: none;
+  border-radius: 3px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.legal-toc a::before {
+  content: counter(toc);
+  flex: none;
+  width: 1.35rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(201, 168, 76, 0.55);
+  transition: color 0.2s ease;
+}
+
+.legal-toc a:hover,
+.legal-toc a:focus-visible {
+  color: var(--white);
+  transform: translateX(3px);
+}
+
+.legal-toc a:hover::before,
+.legal-toc a:focus-visible::before {
+  color: var(--gold);
+}
+
+/* --- CUERPO --- */
+.legal-body {
+  max-width: 68ch;
+  font-size: 0.97rem;
+  line-height: 1.78;
+  color: var(--text-body);
+}
+
+.legal-body > section {
+  padding-top: 2.75rem;
+  margin-top: 2.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.legal-body > section:first-child {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: none;
+}
+
+/* El ancla no queda debajo de la barra fija al saltar desde el índice. */
+.legal-body > section {
+  scroll-margin-top: 6.5rem;
+}
+
+.legal-body h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 1.1rem + 1.1vw, 1.95rem);
+  line-height: 1.25;
+  color: var(--white);
+  margin-bottom: 1.1rem;
+  display: flex;
+  gap: 0.85rem;
+  align-items: baseline;
+}
+
+.legal-body h2 .num {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+.legal-body h3 {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gold-pale);
+  margin: 1.9rem 0 0.7rem;
+}
+
+.legal-body p {
+  margin-bottom: 1.1rem;
+}
+
+.legal-body a {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(228, 201, 126, 0.4);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.legal-body a:hover,
+.legal-body a:focus-visible {
+  text-decoration-color: var(--gold-light);
+}
+
+.legal-body strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.legal-body ul,
+.legal-body ol {
+  margin: 0 0 1.3rem 0;
+  padding-left: 1.15rem;
+}
+
+.legal-body li {
+  margin-bottom: 0.55rem;
+}
+
+.legal-body li::marker {
+  color: var(--gold);
+}
+
+/* --- TABLA DE TERCEROS --- */
+.legal-table-wrap {
+  overflow-x: auto;
+  margin: 0 0 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+}
+
+.legal-table {
+  width: 100%;
+  min-width: 540px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.legal-table th,
+.legal-table td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.legal-table thead th {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--gold-pale);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.legal-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.legal-table tbody tr:hover {
+  background: rgba(201, 168, 76, 0.04);
+}
+
+.legal-table td:first-child {
+  color: var(--white);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* --- AVISOS DESTACADOS --- */
+.legal-callout {
+  margin: 1.6rem 0;
+  padding: 1.15rem 1.3rem;
+  border-left: 2px solid var(--gold);
+  background: rgba(201, 168, 76, 0.06);
+  border-radius: 0 5px 5px 0;
+  font-size: 0.92rem;
+}
+
+.legal-callout p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-callout-title {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.55rem;
+  font-weight: 600;
+}
+
+/* --- FICHA DE CONTACTO --- */
+.legal-contact {
+  margin: 1.6rem 0;
+  padding: 1.5rem 1.6rem;
+  border: 1px solid rgba(201, 168, 76, 0.28);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.legal-contact dl {
+  display: grid;
+  gap: 0.55rem 1.3rem;
+  grid-template-columns: 1fr;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 560px) {
+  .legal-contact dl {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+.legal-contact dt {
+  color: var(--gray);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-top: 0.15rem;
+}
+
+.legal-contact dd {
+  color: var(--white);
+}
+
+/* --- VOLVER --- */
+.legal-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 3px;
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.legal-back:hover,
+.legal-back:focus-visible {
+  background: rgba(201, 168, 76, 0.1);
+  border-color: var(--gold);
+  transform: translateX(-3px);
+}
+
+/* --- MOVIMIENTO REDUCIDO --- */
+@media (prefers-reduced-motion: reduce) {
+  .legal-toc a,
+  .legal-back {
+    transition: none;
+  }
+
+  .legal-toc a:hover,
+  .legal-back:hover {
+    transform: none;
+  }
+}
