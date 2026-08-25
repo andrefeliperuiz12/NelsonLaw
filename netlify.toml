@@ -1,0 +1,50 @@
+# ============================================================
+# Juriscorp S.C. — Configuración de Netlify
+# ============================================================
+#
+# POR QUÉ EXISTE ESTE ARCHIVO. El panel de Netlify tenía activado el
+# post-procesado de HTML, que reescribe las páginas al desplegarlas: quita la
+# extensión .html de los enlaces internos y minifica el marcado. Es un
+# comportamiento razonable, pero vivía sólo en un ajuste del panel.
+#
+# Ya nos pasó antes con verify_jwt en Supabase: un interruptor de panel se
+# perdió en un redespliegue y el formulario estuvo devolviendo 401 sin que
+# nadie supiera por qué. Un ajuste que cambia las URLs públicas del sitio no
+# puede depender de una casilla que nadie recuerda haber marcado.
+#
+# Aquí queda declarado, viaja con el repositorio y se reaplica en cada
+# despliegue.
+#
+# ------------------------------------------------------------
+# QUÉ IMPLICA pretty_urls = true
+# ------------------------------------------------------------
+#
+# Netlify sirve /derecho-penal además de /derecho-penal.html, y reescribe los
+# enlaces del HTML para que apunten a la forma sin extensión.
+#
+# CONSECUENCIA IMPORTANTE: cada página queda accesible en DOS direcciones, y
+# ambas devuelven 200. Para que Google no lo trate como contenido duplicado,
+# el <link rel="canonical"> de cada página y el sitemap.xml apuntan a la forma
+# SIN extensión, que es la misma a la que apuntan los enlaces internos.
+#
+# SI ALGUNA VEZ PONES ESTO EN false:
+#   - /derecho-penal (sin .html) empezará a devolver 404.
+#   - Habrá que revertir los canonical y el sitemap a la forma con .html.
+# No lo cambies sin hacer las dos cosas a la vez.
+# ============================================================
+
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = true
+
+# Nota: aquí NO se declaran `publish` ni `command` a propósito. Se siguen
+# tomando del panel (directorio raíz, sin comando de compilación: el sitio es
+# HTML estático). Declararlos aquí sobreescribiría esa configuración, y un
+# valor equivocado dejaría el sitio sin desplegar.
+#
+# Las cabeceras de seguridad y las redirecciones NO se declaran aquí: viven en
+# los archivos _headers y _redirects, que ya están versionados y llevan su
+# propia documentación. Definirlas en los dos sitios haría que este archivo
+# ganara silenciosamente y que aquéllos quedaran como documentación muerta.
