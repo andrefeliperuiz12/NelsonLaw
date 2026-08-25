@@ -131,16 +131,44 @@
     if (table) table.style.display = '';
     if (emptyState) emptyState.style.display = 'none';
 
+    // Sin onclick= en el marcado. Una CSP en modo enforce bloquea SIEMPRE los
+    // atributos de manejador de evento, y los hashes no sirven para ellos: la
+    // única forma de permitirlos es 'unsafe-inline', que vacía de sentido la
+    // cabecera. La escucha va delegada en el <tbody>, más abajo.
+    //
+    // El botón "Ver" ya no necesita handler propio: el clic burbujea hasta la
+    // fila y el delegado abre el modal una sola vez. Por eso desaparece
+    // también el event.stopPropagation() que antes evitaba el doble disparo.
     tbody.innerHTML = filtered.map(function (lead) {
-      return '<tr data-id="' + lead.id + '" onclick="window.openLeadModal(\'' + lead.id + '\')">' +
+      return '<tr data-id="' + lead.id + '">' +
         '<td>' + formatDateShort(lead.created_at) + '</td>' +
         '<td class="lead-name">' + escapeHtml(lead.full_name) + '</td>' +
         '<td class="lead-phone">' + escapeHtml(lead.phone) + '</td>' +
         '<td><span class="lead-area-badge">' + (AREA_LABELS[lead.legal_area] || lead.legal_area) + '</span></td>' +
         '<td><span class="lead-status-badge ' + lead.status + '">' + (STATUS_LABELS[lead.status] || lead.status) + '</span></td>' +
-        '<td><button class="view-btn" onclick="event.stopPropagation(); window.openLeadModal(\'' + lead.id + '\')">Ver</button></td>' +
+        '<td><button type="button" class="view-btn">Ver</button></td>' +
         '</tr>';
     }).join('');
+  }
+
+  // Delegación de eventos para la tabla de leads.
+  //
+  // Se engancha UNA vez al <tbody>, no en cada renderLeads(): el tbody
+  // sobrevive a los repintados porque sólo se sustituye su innerHTML, así que
+  // volver a añadir la escucha en cada render acumularía listeners y el modal
+  // acabaría abriéndose varias veces por clic.
+  //
+  // closest() sube desde donde se pulsó —una celda, el badge o el botón "Ver"—
+  // hasta la fila, que es quien lleva el data-id.
+  function initTableDelegation() {
+    var tbody = document.getElementById('leadsBody');
+    if (!tbody || tbody.dataset.delegated === '1') return;
+    tbody.dataset.delegated = '1';
+
+    tbody.addEventListener('click', function (e) {
+      var fila = e.target.closest('tr[data-id]');
+      if (fila) window.openLeadModal(fila.dataset.id);
+    });
   }
 
   function escapeHtml(text) {
@@ -334,6 +362,11 @@
       console.error('Supabase not initialized');
       return;
     }
+
+    // Delegación de la tabla. Va ANTES de loadLeads() a propósito: el <tbody>
+    // existe en el HTML desde el principio y sobrevive a los repintados, así
+    // que engancharse aquí evita depender de que las filas ya estén pintadas.
+    initTableDelegation();
 
     // Load leads
     loadLeads();

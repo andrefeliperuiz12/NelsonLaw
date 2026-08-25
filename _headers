@@ -42,48 +42,61 @@
 #   explícitamente para que un script inyectado tampoco pueda.
 #
 # ------------------------------------------------------------
-# LA CSP ESTÁ EN REPORT-ONLY. NO BLOQUEA NADA TODAVÍA.
+# LA CSP ESTÁ EN ENFORCE Y SIN 'unsafe-inline' EN script-src.
 # ------------------------------------------------------------
 #
-# Orígenes inventariados del código real, no supuestos:
-#   challenges.cloudflare.com   Turnstile: script E iframe (index.html:89)
-#   cdn.jsdelivr.net            SDK de Supabase (las dos páginas de admin)
+# Esto es lo que hace que la cabecera sirva de algo. Una CSP con
+# 'unsafe-inline' en script-src NO protege contra XSS, que es justo lo que
+# importa: es una cabecera que aparenta seguridad sin darla. Durante un tiempo
+# esta estuvo así, en Report-Only, esperando a que se pudiera cerrar.
 #
-# Google Fonts YA NO APARECE, y es deliberado. Las tipografías se sirven desde
-# /assets/fonts (ver css/fonts.css). Enlazar fonts.googleapis.com transmitía la
-# IP de cada visitante a Google antes de que pudiera consentir nada. Si alguien
-# vuelve a enlazarlo, esta CSP lo bloqueará: eso es lo que se busca.
+# Orígenes inventariados del código real, no supuestos:
+#   challenges.cloudflare.com   Turnstile: script E iframe
+#   cdn.jsdelivr.net            SDK de Supabase (las dos páginas de admin)
 #   azraryuqcqibppexuiwi...     REST, Auth y la Edge Function
 #
-# POR QUÉ SIGUE EN REPORT-ONLY:
+# Google Fonts NO APARECE, y es deliberado. Las tipografías se sirven desde
+# /assets/fonts (ver css/fonts.css). Enlazar fonts.googleapis.com transmitía la
+# IP de cada visitante a Google antes de que pudiera consentir nada. Ahora que
+# la política está en enforce, si alguien vuelve a enlazarlo el navegador lo
+# BLOQUEARÁ y el sitio se quedará sin tipografías. Eso es lo que se busca.
 #
-# Lleva 'unsafe-inline' en script-src, y con eso una CSP NO protege contra
-# XSS, que es justo lo que importa. Activarla así sería una cabecera que
-# aparenta seguridad sin darla. Hace falta por tres manejadores inline:
-#     index.html:514              onclick=
-#     js/admin-dashboard.js:135   onclick=  (fila de la tabla de leads)
-#     js/admin-dashboard.js:141   onclick=  (botón "Ver")
-# Los atributos onclick= los bloquea la CSP SIEMPRE, y los hashes no sirven
-# para ellos. Sin 'unsafe-inline', la tabla de leads deja de responder al clic
-# y el panel queda inservible.
+# QUÉ HIZO FALTA PARA LLEGAR AQUÍ
 #
-# Hay además 3 bloques <script> inline (NELSON_CONFIG y ADMIN_CONFIG, uno por
-# página). Ésos sí admiten hashes SHA-256, pero cada edición de la
-# configuración cambiaría el hash: trampa de mantenimiento.
+# 1. Los 3 manejadores onclick= inline pasaron a addEventListener:
+#      - botón "Intentar de nuevo" del formulario  -> data-reload en main.js
+#      - fila de la tabla de leads                 -> delegación en el <tbody>
+#      - botón "Ver" de cada fila                  -> el mismo delegado
+#    Los atributos onclick= los bloquea la CSP SIEMPRE y los hashes NO sirven
+#    para ellos: la única alternativa era 'unsafe-inline'.
 #
-# Los estilos inline (5 atributos style=, 8 asignaciones .style. desde JS, más
-# los que inyecta Turnstile) obligan a 'unsafe-inline' en style-src. Eso sí es
-# aceptable: la inyección vía CSS es un vector mucho más débil.
+# 2. Los 4 bloques <script> inline de configuración salieron a ficheros:
+#      js/config.js         NELSON_CONFIG  (index.html y en/index.html)
+#      js/admin-config.js   ADMIN_CONFIG   (las dos páginas de admin)
+#    Se descartaron los hashes SHA-256 a propósito: un hash cambia con
+#    cualquier edición del bloque, incluido un comentario, así que tocar el
+#    número de WhatsApp habría dejado el formulario sin configuración hasta
+#    que alguien recordara actualizar también esta cabecera.
 #
-# PARA PASAR A ENFORCE DE VERDAD:
-#   1. Sustituir los 3 onclick= por addEventListener (delegación de eventos
-#      en el dashboard).
-#   2. Quitar 'unsafe-inline' de script-src y añadir los hashes de los 3
-#      bloques inline.
-#   3. Renombrar la cabecera a Content-Security-Policy (sin -Report-Only).
+# 3. Comprobado que el SDK de Supabase no usa eval() ni new Function(), así
+#    que no hace falta 'unsafe-eval'.
 #
-# Mientras tanto Report-Only sirve para confirmar que el inventario de
-# orígenes está completo. Turnstile es el que más sorpresas suele dar.
+# SIGUE HABIENDO 'unsafe-inline' EN style-src, Y ES ACEPTABLE
+#
+# Lo obligan los atributos style= del marcado, las asignaciones .style. desde
+# JavaScript y los estilos que inyecta Turnstile. La inyección vía CSS es un
+# vector mucho más débil que la de scripts: no ejecuta código.
+#
+# SI ALGO SE ROMPE
+#
+# El síntoma de una CSP demasiado estricta es una función que deja de
+# responder sin ningún error visible en la página: el aviso sale sólo en la
+# consola del navegador ("Refused to execute...", "Refused to connect..."),
+# nombrando la directiva que bloqueó. Ahí se ve exactamente qué origen falta.
+#
+# NO añadas 'unsafe-inline' a script-src para salir del paso: eso devuelve la
+# cabecera al estado en el que no protegía de nada. Lo correcto es sacar el
+# script a un fichero o añadir el origen concreto que falte.
 #
 # ------------------------------------------------------------
 # BLOQUE /assets/fonts/* — caché larga
@@ -116,7 +129,7 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=()
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://azraryuqcqibppexuiwi.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://azraryuqcqibppexuiwi.supabase.co https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
 
 /admin/*
   X-Robots-Tag: noindex, nofollow, noarchive
