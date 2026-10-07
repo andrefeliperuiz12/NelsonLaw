@@ -8,9 +8,10 @@ export const SITE = {
   whatsapp: '50766730357',
   // Mismo número, tal como se muestra. Se usa en /llms.txt.
   phoneDisplay: '+507 6673-0357',
-  // El dominio propio no recibe correo (sin MX): se publica el de Nelson. Si
-  // cambia, actualizarlo también en index.html, en/index.html y privacidad.
-  email: 'nelsonhruiz18@gmail.com',
+  // Correo de la firma (2026-10-07). El dominio propio no recibe correo (sin
+  // MX). Si cambia, actualizarlo también en index.html, en/index.html,
+  // privacidad.html y en/privacy.html.
+  email: 'juriscorplawfirm@gmail.com',
   slugs: {
     residencia: { es: 'residencia-en-panama', en: 'panama-residency' },
     permisos: { es: 'permisos-de-trabajo', en: 'work-permits' },
