@@ -53,7 +53,7 @@
       <div class="legal-eyebrow">Documento legal</div>
       <h1>Política de Privacidad y<br />Tratamiento de Datos Personales</h1>
       <div class="legal-meta">
-        <span>Última actualización: <strong>24 de agosto de 2026</strong></span>
+        <span>Última actualización: <strong>6 de octubre de 2026</strong></span>
         <span>Vigente desde: <strong>24 de agosto de 2026</strong></span>
         <span>Versión: <strong>1.0</strong></span>
       </div>
@@ -132,9 +132,13 @@
         <h3>Datos que usted proporciona</h3>
         <ul>
           <li><strong>Nombre completo</strong> — obligatorio.</li>
-          <li><strong>Teléfono o WhatsApp</strong> — obligatorio.</li>
-          <li><strong>Correo electrónico</strong> — <em>opcional</em>. Puede dejarlo en blanco.</li>
-          <li><strong>Área legal</strong> de su consulta — obligatorio.</li>
+          <li><strong>Teléfono o WhatsApp</strong> y <strong>correo electrónico</strong> — debe
+            indicar <em>al menos uno</em> de los dos.</li>
+          <li><strong>Servicio</strong> sobre el que consulta — obligatorio.</li>
+          <li><strong>País donde se encuentra</strong> — obligatorio. Nos sirve para prever qué
+            gestiones pueden hacerse a distancia.</li>
+          <li><strong>Si existe una notificación o fecha límite</strong> y, si lo desea, esa
+            fecha — sólo en los servicios donde se pregunta.</li>
           <li><strong>Resumen de su caso</strong> — obligatorio.</li>
         </ul>
 
@@ -163,7 +167,7 @@
           <span class="legal-callout-title">Sobre lo que escribe en el resumen</span>
           <p>
             El resumen de su caso puede contener <strong>datos sensitivos</strong> en el sentido de la
-            Ley 81 —por ejemplo, si su consulta versa sobre un asunto penal o migratorio—. Le pedimos
+            Ley 81 —por ejemplo, si su consulta versa sobre un asunto migratorio o una sanción—. Le pedimos
             que en este primer contacto describa su situación en términos generales y <strong>evite
               incluir datos de terceros, documentos de identidad o detalles que no sean
               necesarios</strong> para orientar una primera valoración. Podremos recabar la información
@@ -263,12 +267,13 @@
               <tr>
                 <td>Supabase</td>
                 <td>Base de datos y autenticación</td>
-                <td>Todos los datos de la consulta, incluido el resumen del caso</td>
+                <td>Todos los datos de la consulta, incluido el resumen del caso, y registros técnicos de
+                  conexión, que pueden incluir la dirección IP</td>
               </tr>
               <tr>
                 <td>Resend</td>
                 <td>Envío del aviso de nueva consulta</td>
-                <td>Nombre, teléfono, correo y área legal. <strong>No recibe el resumen del caso</strong></td>
+                <td>Nombre, teléfono y/o correo, servicio, país e indicación de plazo. <strong>No recibe el resumen del caso</strong></td>
               </tr>
               <tr>
                 <td>Cloudflare</td>
@@ -344,7 +349,7 @@
           <span class="legal-callout-title">Este sitio no le rastrea</span>
           <p>
             La parte pública de juriscorppanama.com <strong>no utiliza cookies de seguimiento, ni
-              analítica web, ni píxeles publicitarios, ni almacenamiento local en su navegador</strong>.
+              píxeles publicitarios, ni almacenamiento local en su navegador</strong>.
             No hay Google Analytics, ni herramientas de Meta, ni ningún otro rastreador. Por eso no
             verá un banner de cookies: no hay nada que consentir.
           </p>
@@ -496,11 +501,15 @@
         </div>
       </div>
       <ul class="footer-links">
-        <li><a href="/derecho-administrativo.html">Administrativo</a></li>
-        <li><a href="/derecho-tributario.html">Tributario</a></li>
-        <li><a href="/derecho-penal.html">Penal</a></li>
+        <li><a href="/residencia-en-panama">Residencia</a></li>
+        <li><a href="/permisos-de-trabajo">Permisos de trabajo</a></li>
+        <li><a href="/relocalizacion-legal">Relocalización</a></li>
+        <li><a href="/contratos-empresas-inmuebles">Contratos e inmuebles</a></li>
+        <li><a href="/derecho-administrativo">Administrativo</a></li>
+        <li><a href="/derecho-tributario">Tributario</a></li>
+        <li><a href="/constitucional-contencioso-administrativo">Constitucional</a></li>
         <li><a href="/#contacto">Contacto</a></li>
-        <li><a href="/privacidad.html">Privacidad</a></li>
+        <li><a href="/privacidad">Privacidad</a></li>
       </ul>
       <div class="footer-copy">
         <!-- Año estático: esta página no carga js/main.js, que es quien actualiza
@@ -515,6 +524,8 @@
     </div>
   </footer>
 
+  <script src="/js/config.js" defer></script>
+  <script src="/js/track.js" defer></script>
 </body>
 
 </html>

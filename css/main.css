@@ -1749,3 +1749,294 @@ footer {
 .nav-lang-sep {
   color: rgba(201, 168, 76, 0.35);
 }
+
+/* ============================================================
+   REESTRUCTURACIÓN DE SERVICIOS (2026-10)
+   ============================================================ */
+
+/* El atributo hidden debe ganar SIEMPRE. Sin esto, .form-group (display:flex)
+   lo anula y los campos condicionales del formulario nunca se ocultan. */
+[hidden] {
+  display: none !important;
+}
+
+/* --- PIE: nueve enlaces no caben en una fila --- */
+.footer-links {
+  flex-wrap: wrap;
+  gap: 0.8rem 1.6rem;
+  justify-content: center;
+  flex: 1 1 480px;
+}
+
+/* --- HERO: propuesta de valor como titular --- */
+.hero-name--statement {
+  font-size: clamp(2rem, 3.3vw, 3.5rem);
+  line-height: 1.12;
+  margin-bottom: 1.6rem;
+}
+
+.hero-name--statement em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.hero-content--statement .hero-desc {
+  max-width: 34rem;
+  margin-bottom: 2.2rem;
+}
+
+.hero-aside {
+  margin-top: 1.6rem;
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.9s forwards;
+}
+
+/* --- TARJETAS DE SERVICIO --- */
+.services-intro {
+  max-width: 62ch;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card .service-desc {
+  flex: 1;
+}
+
+.service-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+}
+
+/* --- SITUACIONES: las listas de las tarjetas son enlaces --- */
+.client-card ul li a {
+  color: var(--text-body);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.client-card ul li a:hover,
+.client-card ul li a:focus-visible {
+  color: var(--gold-light);
+  border-color: var(--gold);
+}
+
+/* --- CÓMO TRABAJAMOS --- */
+section#como-trabajamos,
+section#how-we-work {
+  background: var(--navy);
+}
+
+.process-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 4rem;
+  background: rgba(201, 168, 76, 0.1);
+  counter-reset: paso;
+}
+
+.process-step {
+  background: var(--navy-mid);
+  padding: 2.2rem 1.8rem;
+  counter-increment: paso;
+  transition: background 0.3s;
+}
+
+.process-step:hover {
+  background: var(--navy-light);
+}
+
+.process-step::before {
+  content: counter(paso, decimal-leading-zero);
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(201, 168, 76, 0.35);
+  margin-bottom: 1.2rem;
+}
+
+.process-step h3 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  margin-bottom: 0.7rem;
+}
+
+.process-step p {
+  font-size: 0.86rem;
+  line-height: 1.75;
+  color: var(--gray);
+  font-weight: 300;
+}
+
+.process-notes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* --- PREGUNTAS FRECUENTES DE LA PORTADA --- */
+/* Acotado a <section>: las páginas de servicio usan id="preguntas" en un <h2>. */
+section#preguntas,
+section#faq {
+  background: var(--navy-mid);
+}
+
+section#preguntas .area-faq,
+section#faq .area-faq {
+  margin-top: 3rem;
+}
+
+/* --- FORMULARIO --- */
+.form-hint {
+  font-size: 0.74rem;
+  color: var(--gray);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.form-hint--block {
+  margin: -0.9rem 0 1.5rem;
+}
+
+.required {
+  color: var(--error);
+}
+
+.hero-aside a {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.form-choice {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.form-choice legend {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 0.7rem;
+  line-height: 1.5;
+}
+
+.form-choice-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.form-choice-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid rgba(201, 168, 76, 0.18);
+  background: var(--navy-light);
+  font-size: 0.85rem;
+  color: var(--text-body);
+  font-weight: 300;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+}
+
+.form-choice-options label:hover {
+  border-color: rgba(201, 168, 76, 0.45);
+}
+
+.form-choice-options label:has(input:checked) {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--white);
+}
+
+.form-choice-options input[type="radio"] {
+  accent-color: var(--gold);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.form-choice-options label:focus-within {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.form-group input[type="date"] {
+  color-scheme: dark;
+}
+
+.form-consent.error {
+  outline: 1px solid var(--error);
+  outline-offset: 6px;
+}
+
+.turnstile-error {
+  text-align: center;
+  color: var(--error);
+  font-size: 0.78rem;
+  margin-bottom: 1rem;
+}
+
+.form-legal-note {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-left: 2px solid var(--gold);
+  background: rgba(201, 168, 76, 0.06);
+  font-size: 0.76rem;
+  line-height: 1.65;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+@media (max-width: 900px) {
+  .process-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .process-notes {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-name--statement {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-aside {
+    opacity: 1;
+    animation: none;
+  }
+}

@@ -5,6 +5,14 @@
 // ============================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  AREA_LABELS,
+  type CleanLead,
+  DEADLINE_LABELS,
+  type Idioma,
+  MENSAJES,
+  validateLead,
+} from "./validation.ts";
 
 // CORS headers for browser requests
 const corsHeaders = {
@@ -32,45 +40,8 @@ function isRateLimited(ip: string): boolean {
   return entry.count > RATE_LIMIT;
 }
 
-// Valid legal areas (must match DB enum)
-const VALID_LEGAL_AREAS = [
-  "derecho_administrativo",
-  "derecho_tributario",
-  "derecho_penal",
-  "derecho_migratorio",
-  "servicios_corporativos",
-  "tramites_legales",
-  "regularizacion_tierras",
-  "asuntos_inmobiliarios",
-  "poderes_registro_publico",
-  "otro",
-];
-
-// Tope de longitud de los campos de texto libre.
-const MAX_INPUT_LENGTH = 2000;
-
-// Normaliza la entrada. NO escapa HTML, y eso es deliberado.
-//
-// El escape va en el punto de SALIDA: escapeHtml() al construir el correo (más
-// abajo), y en el panel escapeHtml()/textContent (js/admin-dashboard.js).
-//
-// Escapar aquí corrompía el dato en origen. Un apellido panameño como D'León
-// se almacenaba literalmente como "D&#x27;León" y viajaba así al panel y a
-// cualquier exportación futura. Además rompía dos cosas menos visibles:
-//   - Un correo válido como o'brien@bufete.com se convertía en
-//     o&#x27;brien@... y la validación de más abajo lo rechazaba, perdiendo
-//     el lead con un mensaje de "correo inválido" que era falso.
-//   - El recorte a 2000 se aplicaba DESPUÉS de escapar, así que podía cortar
-//     una entidad por la mitad ("&#x2") y el tope real variaba según cuántas
-//     comillas escribiera la persona.
-//
-// El nombre importa: una función llamada sanitize() que no sanea invita a que
-// alguien la dé por segura al interpolarla en HTML.
-function normalizeInput(input: string): string {
-  return input
-    .trim()
-    .substring(0, MAX_INPUT_LENGTH);
-}
+// La validación de campos vive en validation.ts: es lógica pura y así se
+// prueba con Node (tests/validation.test.mjs) sin desplegar nada.
 
 // Escapa para interpolar en HTML. Punto de SALIDA, no de entrada.
 // El orden importa: & va PRIMERO o volvería a escapar las entidades que
@@ -83,17 +54,6 @@ function escapeHtml(value: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#x27;");
-}
-
-// Validate email format
-function isValidEmail(email: string): boolean {
-  return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
-}
-
-// Validate phone (at least 7 digits)
-function isValidPhone(phone: string): boolean {
-  const digits = phone.replace(/\D/g, "");
-  return digits.length >= 7 && digits.length <= 20;
 }
 
 // Resultado del envío de notificación.
@@ -117,13 +77,25 @@ function truncateError(message: string): string {
     : message;
 }
 
-// Send notification email via Resend
-async function sendNotificationEmail(lead: {
-  full_name: string;
-  phone: string;
-  email: string | null;
-  legal_area: string;
-}): Promise<NotifyResult> {
+// Una fila etiqueta/valor del correo. El valor llega SIN escapar y se escapa
+// aquí, en el punto de salida.
+function emailRow(label: string, value: string): string {
+  return `
+              <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">${label}</td></tr>
+              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(value)}</td></tr>`;
+}
+
+// Texto de la fila "Plazo" del correo: si hay notificación o vencimiento,
+// es lo primero que hay que ver para priorizar la respuesta.
+function deadlineText(lead: CleanLead): string | null {
+  if (!lead.has_deadline) return null;
+  const label = DEADLINE_LABELS[lead.has_deadline] || lead.has_deadline;
+  return lead.deadline_date ? `${label} (fecha indicada: ${lead.deadline_date})` : label;
+}
+
+// Send notification email via Resend.
+// Nunca incluye el resumen del caso: ese texto sólo vive en la base de datos.
+async function sendNotificationEmail(lead: CleanLead): Promise<NotifyResult> {
   const resendApiKey = Deno.env.get("RESEND_API_KEY");
   const notificationEmail = Deno.env.get("NOTIFICATION_EMAIL");
 
@@ -134,19 +106,8 @@ async function sendNotificationEmail(lead: {
   }
 
   const fromAddress = Deno.env.get("RESEND_FROM") || RESEND_FROM_FALLBACK;
-
-  const areaLabels: Record<string, string> = {
-    derecho_administrativo: "Derecho Administrativo",
-    derecho_tributario: "Derecho Tributario",
-    derecho_penal: "Derecho Penal",
-    derecho_migratorio: "Derecho Migratorio",
-    servicios_corporativos: "Servicios Corporativos y Comerciales",
-    tramites_legales: "Trámites Legales en Panamá",
-    regularizacion_tierras: "Regularización de Tierras",
-    asuntos_inmobiliarios: "Asuntos Inmobiliarios y Due Diligence",
-    poderes_registro_publico: "Poderes, Registro Público y Sociedades",
-    otro: "Otra Área",
-  };
+  const areaLabel = AREA_LABELS[lead.legal_area] || lead.legal_area;
+  const deadline = deadlineText(lead);
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -161,7 +122,7 @@ async function sendNotificationEmail(lead: {
         // El asunto NO se escapa a propósito: es una cabecera de correo, no
         // HTML. Escaparlo mostraría "D&#x27;León" literal en la bandeja. Viaja
         // como JSON a la API de Resend, que se encarga de codificarlo.
-        subject: `Nuevo Lead: ${lead.full_name} — ${areaLabels[lead.legal_area] || lead.legal_area}`,
+        subject: `Nuevo Lead: ${lead.full_name} — ${areaLabel}${lead.has_deadline === "si" ? " — CON PLAZO" : ""}`,
         html: `
           <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0d1b2a; color: #d0dae8; border-radius: 8px;">
             <div style="border-bottom: 2px solid #c9a84c; padding-bottom: 16px; margin-bottom: 24px;">
@@ -169,16 +130,12 @@ async function sendNotificationEmail(lead: {
               <p style="color: #8a9bb0; margin: 4px 0 0; font-size: 13px;">${new Date().toLocaleString("es-PA", { timeZone: "America/Panama" })}</p>
             </div>
             <table style="width: 100%; border-collapse: collapse;">
-              <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Nombre</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(lead.full_name)}</td></tr>
-              <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Teléfono</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(lead.phone)}</td></tr>
-              ${lead.email ? `
-              <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Email</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${escapeHtml(lead.email)}</td></tr>
-              ` : ""}
-              <tr><td style="padding: 8px 0; color: #c9a84c; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Área Legal</td></tr>
-              <tr><td style="padding: 0 0 16px; color: #ffffff; font-size: 16px;">${areaLabels[lead.legal_area] || lead.legal_area}</td></tr>
+              ${emailRow("Nombre", lead.full_name)}
+              ${lead.phone ? emailRow("Teléfono / WhatsApp", lead.phone) : ""}
+              ${lead.email ? emailRow("Email", lead.email) : ""}
+              ${emailRow("Servicio", areaLabel)}
+              ${lead.client_country ? emailRow("País donde se encuentra", lead.client_country) : ""}
+              ${deadline ? emailRow("Notificación o fecha límite", deadline) : ""}
             </table>
             <div style="margin-top: 24px; padding: 16px; background: #162336; border-left: 3px solid #c9a84c; border-radius: 4px;">
               <p style="color: #8a9bb0; margin: 0; font-size: 12px;">El resumen del caso está disponible en el panel de administración por seguridad.</p>
@@ -231,48 +188,8 @@ async function sendNotificationEmail(lead: {
 //
 // Al añadir un mensaje nuevo hay que darlo en los DOS idiomas o el objeto
 // deja de ser válido para el tipo Mensajes.
-type Idioma = "es" | "en";
-
-type Mensajes = Record<
-  | "rateLimit" | "consent" | "turnstileRequired" | "serverConfig"
-  | "turnstileFailed" | "requiredFields" | "nameTooShort" | "phoneInvalid"
-  | "emailInvalid" | "areaInvalid" | "summaryTooShort" | "saveFailed"
-  | "unexpected",
-  string
->;
-
-const MENSAJES: Record<Idioma, Mensajes> = {
-  es: {
-    rateLimit: "Demasiadas solicitudes. Por favor espere un momento.",
-    consent: "Debe aceptar la política de privacidad.",
-    turnstileRequired: "Verificación de seguridad requerida. Por favor recargue la página.",
-    serverConfig: "Error de configuración del servidor.",
-    turnstileFailed: "Verificación de seguridad fallida. Por favor intente de nuevo.",
-    requiredFields: "Por favor complete todos los campos requeridos.",
-    nameTooShort: "El nombre debe tener al menos 2 caracteres.",
-    phoneInvalid: "Número de teléfono inválido.",
-    emailInvalid: "Correo electrónico inválido.",
-    areaInvalid: "Área legal no válida.",
-    summaryTooShort: "El resumen del caso debe tener al menos 10 caracteres.",
-    saveFailed: "No se pudo guardar su consulta. Por favor intente de nuevo.",
-    unexpected: "Error inesperado. Por favor intente de nuevo más tarde.",
-  },
-  en: {
-    rateLimit: "Too many requests. Please wait a moment.",
-    consent: "You must accept the privacy policy.",
-    turnstileRequired: "Security verification required. Please reload the page.",
-    serverConfig: "Server configuration error.",
-    turnstileFailed: "Security verification failed. Please try again.",
-    requiredFields: "Please complete all required fields.",
-    nameTooShort: "Name must be at least 2 characters long.",
-    phoneInvalid: "Invalid phone number.",
-    emailInvalid: "Invalid email address.",
-    areaInvalid: "Invalid practice area.",
-    summaryTooShort: "The case summary must be at least 10 characters long.",
-    saveFailed: "We could not save your enquiry. Please try again.",
-    unexpected: "Unexpected error. Please try again later.",
-  },
-};
+// La tabla vive en validation.ts (MENSAJES), junto a los códigos de error que
+// traduce, para que el simulador local responda con los mismos textos.
 
 // Cualquier valor distinto de "en" cae en español, que es el idioma principal
 // del despacho. No se usa Accept-Language: lo manda el navegador según su
@@ -324,7 +241,7 @@ Deno.serve(async (req) => {
 
     // Parse body
     const body = await req.json();
-    const { turnstileToken, fullName, phone, email, legalArea, caseSummary, consent } = body;
+    const { turnstileToken, consent } = body ?? {};
 
     // 1. Validate consent
     if (!consent) {
@@ -381,64 +298,17 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 3. Validate required fields
-    if (!fullName || !phone || !legalArea || !caseSummary) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: msg.requiredFields,
-        }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // 4. Normalizar entradas (recorte de espacios y tope de longitud).
+    // 3-5. Validar y normalizar los campos (validation.ts).
     // NO se escapa HTML aquí: el valor se almacena limpio y se escapa en cada
-    // punto de salida. Ver normalizeInput() y escapeHtml() arriba.
-    const cleanName = normalizeInput(fullName);
-    const cleanPhone = normalizeInput(phone);
-    const cleanEmail = email ? normalizeInput(email) : null;
-    const cleanSummary = normalizeInput(caseSummary);
-    const cleanArea = normalizeInput(legalArea);
-
-    // 5. Validate field formats
-    if (cleanName.length < 2) {
+    // punto de salida. Ver normalizeInput() en validation.ts y escapeHtml().
+    const validation = validateLead(body);
+    if (!validation.ok) {
       return new Response(
-        JSON.stringify({ success: false, error: msg.nameTooShort }),
+        JSON.stringify({ success: false, error: msg[validation.code] }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    if (!isValidPhone(cleanPhone)) {
-      return new Response(
-        JSON.stringify({ success: false, error: msg.phoneInvalid }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (cleanEmail && !isValidEmail(cleanEmail)) {
-      return new Response(
-        JSON.stringify({ success: false, error: msg.emailInvalid }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!VALID_LEGAL_AREAS.includes(cleanArea)) {
-      return new Response(
-        JSON.stringify({ success: false, error: msg.areaInvalid }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (cleanSummary.length < 10) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: msg.summaryTooShort,
-        }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const lead = validation.lead;
 
     // 6. Insert into Supabase using service_role
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -454,14 +324,13 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // `lead` incluye client_country, has_deadline y deadline_date: columnas
+    // que crea la migración 003. Aplicarla ANTES de desplegar esta versión,
+    // o cada alta fallará con "column does not exist".
     const { data, error: insertError } = await supabase
       .from("leads")
       .insert({
-        full_name: cleanName,
-        phone: cleanPhone,
-        email: cleanEmail,
-        legal_area: cleanArea,
-        case_summary: cleanSummary,
+        ...lead,
         source: "web_form",
         status: "nuevo",
       })
@@ -484,12 +353,7 @@ Deno.serve(async (req) => {
     //    en la propia fila, pero nunca revierte ni bloquea el alta.
     //    La llamada es bloqueante a propósito: necesitamos su resultado
     //    para persistirlo en el paso 8.
-    const notifyResult = await sendNotificationEmail({
-      full_name: cleanName,
-      phone: cleanPhone,
-      email: cleanEmail,
-      legal_area: cleanArea,
-    });
+    const notifyResult = await sendNotificationEmail(lead);
 
     // 8. Persistir el estado de la notificación (migración 002).
     //    Sustituye el antiguo fallo silencioso: antes, un rechazo de Resend
@@ -527,7 +391,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Su consulta ha sido recibida exitosamente. Le contactaremos a la brevedad.",
+        message: "Consulta recibida.",
         leadId: data?.id,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

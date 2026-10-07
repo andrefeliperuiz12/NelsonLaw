@@ -48,7 +48,7 @@
       <div class="legal-eyebrow">Legal document</div>
       <h1>Privacy Policy and<br />Personal Data Processing</h1>
       <div class="legal-meta">
-        <span>Last updated: <strong>25 August 2026</strong></span>
+        <span>Last updated: <strong>6 October 2026</strong></span>
         <span>In force since: <strong>24 August 2026</strong></span>
         <span>Version: <strong>1.0</strong></span>
       </div>
@@ -125,9 +125,13 @@
         <h3>Data you provide</h3>
         <ul>
           <li><strong>Full name</strong> — required.</li>
-          <li><strong>Phone or WhatsApp</strong> — required.</li>
-          <li><strong>Email address</strong> — <em>optional</em>. You may leave it blank.</li>
-          <li><strong>Practice area</strong> of your enquiry — required.</li>
+          <li><strong>Phone or WhatsApp</strong> and <strong>email address</strong> — you must
+            give <em>at least one</em> of the two.</li>
+          <li><strong>Service</strong> you are enquiring about — required.</li>
+          <li><strong>Country you are in</strong> — required. It helps us anticipate which steps
+            can be handled remotely.</li>
+          <li><strong>Whether there is a notice or deadline</strong> and, if you wish, its
+            date — only for the services where we ask.</li>
           <li><strong>Summary of your case</strong> — required.</li>
         </ul>
 
@@ -156,7 +160,7 @@
           <span class="legal-callout-title">About what you write in the summary</span>
           <p>
             The summary of your case may contain <strong>sensitive data</strong> within the meaning
-            of Law 81 — for example, if your enquiry concerns a criminal or immigration matter. We
+            of Law 81 — for example, if your enquiry concerns an immigration matter or a penalty. We
             ask that at this first contact you describe your situation in general terms and
             <strong>avoid including third-party data, identity documents or details that are not
               necessary</strong> for an initial assessment. We can gather the full information
@@ -257,12 +261,13 @@
               <tr>
                 <td>Supabase</td>
                 <td>Database and authentication</td>
-                <td>All enquiry data, including the case summary</td>
+                <td>All enquiry data, including the case summary, and technical connection logs, which
+                  may include the IP address</td>
               </tr>
               <tr>
                 <td>Resend</td>
                 <td>Sending the new-enquiry notification</td>
-                <td>Name, phone, email and practice area. <strong>It does not receive the case summary</strong></td>
+                <td>Name, phone and/or email, service, country and deadline indication. <strong>It does not receive the case summary</strong></td>
               </tr>
               <tr>
                 <td>Cloudflare</td>
@@ -338,8 +343,8 @@
         <div class="legal-callout">
           <span class="legal-callout-title">This site does not track you</span>
           <p>
-            The public part of juriscorppanama.com <strong>uses no tracking cookies, no web
-              analytics, no advertising pixels and no local storage in your browser</strong>. There
+            The public part of juriscorppanama.com <strong>uses no tracking cookies, no
+              advertising pixels and no local storage in your browser</strong>. There
             is no Google Analytics, no Meta tooling, and no other tracker. That is why you will not
             see a cookie banner: there is nothing to consent to.
           </p>
@@ -490,9 +495,13 @@
         </div>
       </div>
       <ul class="footer-links">
+        <li><a href="/en/panama-residency">Residency</a></li>
+        <li><a href="/en/work-permits">Work permits</a></li>
+        <li><a href="/en/legal-relocation">Relocation</a></li>
+        <li><a href="/en/contracts-companies-real-estate">Contracts &amp; real estate</a></li>
         <li><a href="/en/administrative-law">Administrative</a></li>
         <li><a href="/en/tax-law">Tax</a></li>
-        <li><a href="/en/criminal-law">Criminal</a></li>
+        <li><a href="/en/constitutional-administrative-litigation">Constitutional</a></li>
         <li><a href="/en/#contact">Contact</a></li>
         <li><a href="/en/privacy">Privacy</a></li>
       </ul>
@@ -507,6 +516,8 @@
     </div>
   </footer>
 
+  <script src="/js/config.js" defer></script>
+  <script src="/js/track.js" defer></script>
 </body>
 
 </html>

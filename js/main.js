@@ -43,6 +43,8 @@
       minLength: function (n) { return 'Mínimo ' + n + ' caracteres.'; },
       email: 'Correo electrónico inválido.',
       phone: 'Número de teléfono inválido.',
+      contact: 'Indique un WhatsApp o teléfono, o un correo electrónico.',
+      choose: 'Seleccione una opción.',
       turnstile: 'Por favor complete la verificación de seguridad.',
       serverError: function (s) {
         return 'Tuvimos un problema en nuestro servidor y no pudimos registrar ' +
@@ -61,6 +63,8 @@
       minLength: function (n) { return 'Minimum ' + n + ' characters.'; },
       email: 'Invalid email address.',
       phone: 'Invalid phone number.',
+      contact: 'Please provide a WhatsApp or phone number, or an email address.',
+      choose: 'Please choose an option.',
       turnstile: 'Please complete the security verification.',
       serverError: function (s) {
         return 'We had a problem on our server and could not record your enquiry ' +
@@ -108,10 +112,9 @@
 
     if (toggle && links) {
       toggle.addEventListener('click', function () {
-        links.classList.toggle('open');
-        // Animate hamburger
-        const spans = toggle.querySelectorAll('span');
-        toggle.classList.toggle('active');
+        var isOpen = links.classList.toggle('open');
+        toggle.classList.toggle('active', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
 
       // Close menu on link click
@@ -119,6 +122,7 @@
         link.addEventListener('click', function () {
           links.classList.remove('open');
           toggle.classList.remove('active');
+          toggle.setAttribute('aria-expanded', 'false');
         });
       });
     }
@@ -164,7 +168,7 @@
     turnstileToken = token;
     // Clear any turnstile error
     var tsError = document.getElementById('turnstileError');
-    if (tsError) tsError.style.display = 'none';
+    if (tsError) tsError.hidden = true;
   };
 
   window.onTurnstileExpired = function () {
@@ -214,38 +218,110 @@
     return true;
   }
 
+  // --- CAMPOS CONDICIONALES ---
+  // La pregunta por una notificación o fecha límite sólo aparece en los
+  // servicios donde un plazo cambia la prioridad de la respuesta. En contratos
+  // o relocalización sería una pregunta de más.
+  var DEADLINE_AREAS = [
+    'residencia_migracion',
+    'permisos_trabajo',
+    'administrativo_tributario',
+    'constitucional_contencioso',
+    'otro'
+  ];
+
+  function el(id) {
+    return document.getElementById(id);
+  }
+
+  function selectedDeadline() {
+    var checked = document.querySelector('input[name="deadline"]:checked');
+    return checked ? checked.value : '';
+  }
+
+  function isDeadlineVisible() {
+    var group = el('deadlineGroup');
+    return !!group && !group.hidden;
+  }
+
+  function updateConditionalFields() {
+    var area = el('legalArea');
+    var group = el('deadlineGroup');
+    var dateGroup = el('deadlineDateGroup');
+    if (!area || !group) return;
+
+    group.hidden = DEADLINE_AREAS.indexOf(area.value) === -1;
+    if (dateGroup) dateGroup.hidden = group.hidden || selectedDeadline() !== 'si';
+  }
+
+  function setGroupError(group, message) {
+    if (!group) return;
+    var errorEl = group.querySelector('.field-error');
+    group.classList.toggle('error', !!message);
+    if (errorEl) errorEl.textContent = message || '';
+  }
+
+  // Correo o WhatsApp: basta con uno, pero el que se escriba debe ser válido.
+  function validateContact() {
+    var phone = el('phone');
+    var email = el('email');
+    var phoneOk = validateField(phone, { phone: true });
+    var emailOk = validateField(email, { email: true });
+    if (!phoneOk || !emailOk) return false;
+    if (!phone.value.trim() && !email.value.trim()) {
+      setGroupError(phone.closest('.form-group'), T.contact);
+      return false;
+    }
+    return true;
+  }
+
+  function validateDeadline() {
+    if (!isDeadlineVisible()) return true;
+    var ok = !!selectedDeadline();
+    setGroupError(el('deadlineGroup'), ok ? '' : T.choose);
+    return ok;
+  }
+
+  // Preselecciona el servicio cuando se llega desde una página de servicio
+  // (enlaces /?area=residencia_migracion#contacto). Sólo se aceptan valores
+  // que existan en el <select>: el parámetro viene de la URL y no es de fiar.
+  function preselectArea() {
+    var area = el('legalArea');
+    if (!area || !window.URLSearchParams) return;
+    var wanted = new URLSearchParams(window.location.search).get('area');
+    if (!wanted) return;
+    for (var i = 0; i < area.options.length; i++) {
+      if (area.options[i].value === wanted && wanted !== '') {
+        area.value = wanted;
+        return;
+      }
+    }
+  }
+
   function validateForm() {
     var valid = true;
 
-    var fullName = document.getElementById('fullName');
-    var phone = document.getElementById('phone');
-    var email = document.getElementById('email');
-    var legalArea = document.getElementById('legalArea');
-    var caseSummary = document.getElementById('caseSummary');
-    var consent = document.getElementById('consent');
+    if (!validateField(el('fullName'), { required: true, minLength: 2 })) valid = false;
+    if (!validateContact()) valid = false;
+    if (!validateField(el('legalArea'), { required: true })) valid = false;
+    if (!validateField(el('country'), { required: true, minLength: 2 })) valid = false;
+    if (!validateDeadline()) valid = false;
+    if (!validateField(el('caseSummary'), { required: true, minLength: 10 })) valid = false;
 
-    if (!validateField(fullName, { required: true, minLength: 2 })) valid = false;
-    if (!validateField(phone, { required: true, phone: true })) valid = false;
-    if (!validateField(email, { email: true })) valid = false;
-    if (!validateField(legalArea, { required: true })) valid = false;
-    if (!validateField(caseSummary, { required: true, minLength: 10 })) valid = false;
-
-    // Consent check
+    var consent = el('consent');
+    var consentGroup = consent ? consent.closest('.form-consent') : null;
     if (consent && !consent.checked) {
-      var consentGroup = consent.closest('.form-consent');
-      if (consentGroup) consentGroup.style.outline = '1px solid var(--error)';
+      if (consentGroup) consentGroup.classList.add('error');
       valid = false;
-    } else {
-      var consentGroup2 = consent ? consent.closest('.form-consent') : null;
-      if (consentGroup2) consentGroup2.style.outline = 'none';
+    } else if (consentGroup) {
+      consentGroup.classList.remove('error');
     }
 
-    // Turnstile check
     if (!turnstileToken) {
-      var tsError = document.getElementById('turnstileError');
+      var tsError = el('turnstileError');
       if (tsError) {
         tsError.textContent = T.turnstile;
-        tsError.style.display = 'block';
+        tsError.hidden = false;
       }
       valid = false;
     }
@@ -280,14 +356,21 @@
       }
 
       try {
+        // Los campos ocultos no se envían: si la persona cambió de servicio
+        // después de responder la pregunta del plazo, esa respuesta ya no
+        // aplica.
+        var deadline = isDeadlineVisible() ? selectedDeadline() : '';
         var payload = {
           turnstileToken: turnstileToken,
-          fullName: document.getElementById('fullName').value.trim(),
-          phone: document.getElementById('phone').value.trim(),
-          email: document.getElementById('email').value.trim() || null,
-          legalArea: document.getElementById('legalArea').value,
-          caseSummary: document.getElementById('caseSummary').value.trim(),
-          consent: document.getElementById('consent').checked,
+          fullName: el('fullName').value.trim(),
+          phone: el('phone').value.trim() || null,
+          email: el('email').value.trim() || null,
+          legalArea: el('legalArea').value,
+          country: el('country').value.trim(),
+          deadline: deadline || null,
+          deadlineDate: deadline === 'si' ? (el('deadlineDate').value || null) : null,
+          caseSummary: el('caseSummary').value.trim(),
+          consent: el('consent').checked,
         };
 
         var response = await fetch(edgeUrl(), {
@@ -313,6 +396,9 @@
         }
 
         if (response.ok && result && result.success) {
+          // Contador anónimo (js/track.js): sólo suma "una consulta enviada",
+          // sin ningún dato del formulario.
+          if (window.JuriscorpTrack) window.JuriscorpTrack.formSubmit();
           // Show success
           if (formFields) formFields.classList.add('hidden');
           if (successMsg) successMsg.classList.add('visible');
@@ -355,8 +441,19 @@
       }
     });
 
+    // Campos condicionales y preselección del servicio.
+    preselectArea();
+    updateConditionalFields();
+    el('legalArea').addEventListener('change', updateConditionalFields);
+    form.querySelectorAll('input[name="deadline"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        updateConditionalFields();
+        validateDeadline();
+      });
+    });
+
     // Real-time validation on blur
-    var fields = form.querySelectorAll('input, select, textarea');
+    var fields = form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]), select, textarea');
     fields.forEach(function (field) {
       field.addEventListener('blur', function () {
         var rules = {};

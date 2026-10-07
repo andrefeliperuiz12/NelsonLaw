@@ -405,6 +405,11 @@ deno_version = 2
 [functions.submit-lead]
 verify_jwt = false
 
+# Contador anónimo de contactos. Público como submit-lead: lo llama el
+# navegador de cualquier visitante sin sesión. Ver supabase/functions/track-event.
+[functions.track-event]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

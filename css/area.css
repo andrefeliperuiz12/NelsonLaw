@@ -643,3 +643,130 @@
     padding-left: 0;
   }
 }
+
+/* ============================================================
+   REESTRUCTURACIÓN DE SERVICIOS (2026-10)
+   Piezas que añaden las páginas generadas por scripts/build-pages.mjs.
+   Reutilizan los tokens y el lenguaje visual de arriba.
+   ============================================================ */
+
+/* Formación o experiencia bajo el párrafo de entrada. */
+.area-hero-note {
+  margin-top: 1.2rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.02em;
+  color: var(--gold-light);
+  font-weight: 400;
+}
+
+/* Las anclas (#inmuebles, #empresas) no deben quedar bajo la barra fija. */
+.area-service[id] {
+  scroll-margin-top: 7rem;
+}
+
+/* Enlaces dentro del texto corrido. */
+.area-service p a,
+.area-notice p a,
+.area-faq-answer a {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.area-service p a:hover,
+.area-notice p a:hover,
+.area-faq-answer a:hover,
+.area-service p a:focus-visible,
+.area-notice p a:focus-visible,
+.area-faq-answer a:focus-visible {
+  color: var(--gold-pale);
+}
+
+/* Pasos de la forma de trabajo: tarjetas institucionales con número. */
+@media (min-width: 1000px) {
+  .area-steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.area-steps .area-institution-acronym {
+  font-size: 2rem;
+  -webkit-text-stroke: 1px var(--gold);
+  color: transparent;
+}
+
+/* Subtítulo de un bloque dentro de una sección. */
+.area-subhead {
+  margin: 3.5rem 0 1.6rem;
+  max-width: 62ch;
+}
+
+.area-subhead h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: var(--white);
+}
+
+.area-subhead p {
+  margin-top: 0.7rem;
+  font-size: 0.93rem;
+  line-height: 1.72;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+/* Documentación inicial orientativa. */
+.area-checklist {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--hairline);
+  max-width: 980px;
+}
+
+@media (min-width: 780px) {
+  .area-checklist {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 3rem;
+  }
+}
+
+.area-checklist li {
+  position: relative;
+  padding: 1rem 0 1rem 1.6rem;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--text-body);
+  font-weight: 300;
+}
+
+.area-checklist li::before {
+  content: '';
+  position: absolute;
+  left: 0.15rem;
+  top: 1.45rem;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+
+/* Aviso bajo los botones de la llamada a la acción. */
+.area-cta-note {
+  margin: 1.6rem 0 0 !important;
+  font-size: 0.8rem !important;
+  color: var(--gray) !important;
+}
+
+/* Seis servicios hermanos: tres columnas en pantallas anchas. */
+@media (min-width: 1000px) {
+  .area-siblings-grid--many {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.area-siblings-grid--many .area-sibling-name {
+  font-size: 1.22rem;
+}

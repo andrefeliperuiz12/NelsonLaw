@@ -35,6 +35,100 @@
   </header>
 
   <main class="admin-main">
+    <!-- Origen de visitas y contactos. Contadores anónimos y agregados, sin
+         datos personales (migración 004, js/track.js, js/admin-analytics.js). -->
+    <section class="origin-panel" id="originPanel" aria-labelledby="originTitle">
+      <div class="origin-head">
+        <div>
+          <h2 id="originTitle">Origen de visitas y contactos</h2>
+          <p class="origin-note">
+            Recuento anónimo: cuántas visitas entran al sitio y cuántas veces se pulsan los botones de
+            contacto, según desde dónde se llegó. No identifica a nadie.
+            <span id="originBrowserNote"></span>
+          </p>
+        </div>
+        <label class="origin-period">
+          Periodo
+          <select id="originPeriod">
+            <option value="7">Últimos 7 días</option>
+            <option value="30" selected>Últimos 30 días</option>
+            <option value="90">Últimos 90 días</option>
+            <option value="365">Último año</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="origin-status" id="originStatus" role="status" hidden></p>
+
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-card-num" id="origin-landing">0</div>
+          <div class="stat-card-label">Visitas de entrada</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="origin-whatsapp_click">0</div>
+          <div class="stat-card-label">Clics en WhatsApp</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="origin-phone_click">0</div>
+          <div class="stat-card-label">Clics en teléfono</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="origin-email_click">0</div>
+          <div class="stat-card-label">Clics en correo</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="origin-form_submit">0</div>
+          <div class="stat-card-label">Consultas por formulario</div>
+        </div>
+      </div>
+
+      <div class="origin-tables">
+        <div class="leads-table-wrap">
+          <table class="leads-table origin-table">
+            <caption>Por origen</caption>
+            <thead>
+              <tr>
+                <th>Origen</th>
+                <th class="origin-num">Entradas</th>
+                <th class="origin-num">WhatsApp</th>
+                <th class="origin-num">Teléfono</th>
+                <th class="origin-num">Correo</th>
+                <th class="origin-num">Formulario</th>
+              </tr>
+            </thead>
+            <tbody id="originSourcesBody"></tbody>
+          </table>
+        </div>
+
+        <div class="leads-table-wrap">
+          <table class="leads-table origin-table">
+            <caption>Dónde se pulsa</caption>
+            <thead>
+              <tr>
+                <th>Botón</th>
+                <th>Página</th>
+                <th>Ubicación</th>
+                <th class="origin-num">Clics</th>
+              </tr>
+            </thead>
+            <tbody id="originClicksBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <details class="origin-help">
+        <summary>Cómo leer estas cifras</summary>
+        <ul>
+          <li><strong>Asistentes de IA</strong>: visitas que llegan desde ChatGPT, Perplexity, Claude, Gemini, Copilot y similares.</li>
+          <li><strong>Directo o sin origen</strong>: enlace escrito a mano, favoritos, o una app que no informa de dónde viene. Muchas apps de IA y de mensajería no lo informan, así que parte de su tráfico cae aquí.</li>
+          <li><strong>Tras navegar por el sitio</strong>: clics hechos después de pasar por otra página del sitio. Su origen se cuenta en «Entradas», pero no se puede ligar al clic sin rastrear a la persona, y eso no se hace.</li>
+          <li><strong>Otros sitios</strong>: cualquier sitio que no está en la lista fija (asistentes de IA, buscadores y redes conocidas). Por privacidad no se guarda cuál fue: un dominio o una etiqueta de enlace pueden identificar a alguien. Si un sitio concreto empieza a importar (un directorio jurídico, por ejemplo), se puede añadir a la lista.</li>
+          <li>Las cifras son orientativas: no distinguen a una persona que vuelve de una nueva, y alguien podría inflarlas a propósito.</li>
+        </ul>
+      </details>
+    </section>
+
     <!-- Stats Bar -->
     <div class="stats-bar" id="statsBar">
       <div class="stat-card">
@@ -88,8 +182,8 @@
           <tr>
             <th>Fecha</th>
             <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Área</th>
+            <th>Contacto</th>
+            <th>Servicio</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -128,8 +222,16 @@
             <span id="modalEmail">—</span>
           </div>
           <div class="modal-field">
-            <span class="modal-label">Área Legal:</span>
+            <span class="modal-label">Servicio:</span>
             <span id="modalArea"></span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-label">País:</span>
+            <span id="modalCountry">—</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-label">Plazo:</span>
+            <span id="modalDeadline">—</span>
           </div>
           <div class="modal-field">
             <span class="modal-label">Fuente:</span>
@@ -202,5 +304,6 @@
   <script src="../js/admin-config.js"></script>
   <script src="../js/admin-auth.js"></script>
   <script src="../js/admin-dashboard.js"></script>
+  <script src="../js/admin-analytics.js"></script>
 </body>
 </html>

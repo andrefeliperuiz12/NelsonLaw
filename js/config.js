@@ -19,6 +19,10 @@
 
 window.NELSON_CONFIG = {
   EDGE_FUNCTION_URL: 'https://azraryuqcqibppexuiwi.supabase.co/functions/v1/submit-lead',
+
+  // Contador anónimo de contactos (js/track.js → Edge Function track-event).
+  // Vacío = no se mide nada. Requiere la migración 004 y la función desplegada.
+  TRACK_URL: 'https://azraryuqcqibppexuiwi.supabase.co/functions/v1/track-event',
   TURNSTILE_SITE_KEY: '0x4AAAAAACzHvF4l30jALx9_',
 
   // Número de la firma en formato E.164 sin '+'. Los enlaces wa.me del HTML

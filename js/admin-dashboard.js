@@ -12,17 +12,33 @@
   let allLeads = [];
   let currentLeadId = null;
 
+  // Deben coincidir con AREA_LABELS de
+  // supabase/functions/submit-lead/validation.ts. Los "(anterior)" son los
+  // servicios previos a la reestructuración de 2026-10: siguen existiendo en
+  // leads antiguos y no se pueden borrar del enum.
   const AREA_LABELS = {
-    derecho_administrativo: 'Derecho Administrativo',
-    derecho_tributario: 'Derecho Tributario',
-    derecho_penal: 'Derecho Penal',
-    derecho_migratorio: 'Derecho Migratorio',
-    servicios_corporativos: 'Servicios Corporativos',
-    tramites_legales: 'Trámites Legales',
-    regularizacion_tierras: 'Regularización de Tierras',
-    asuntos_inmobiliarios: 'Asuntos Inmobiliarios',
-    poderes_registro_publico: 'Poderes y Registro',
-    otro: 'Otra Área',
+    residencia_migracion: 'Residencia y migración',
+    permisos_trabajo: 'Permisos de trabajo',
+    relocalizacion_legal: 'Relocalización legal',
+    contratos_empresas_inmuebles: 'Contratos, empresas e inmuebles',
+    administrativo_tributario: 'Administrativo y tributario',
+    constitucional_contencioso: 'Constitucional y contencioso',
+    otro: 'Otro asunto',
+    derecho_administrativo: 'Administrativo (anterior)',
+    derecho_tributario: 'Tributario (anterior)',
+    derecho_penal: 'Penal (anterior)',
+    derecho_migratorio: 'Migratorio (anterior)',
+    servicios_corporativos: 'Corporativos (anterior)',
+    tramites_legales: 'Trámites (anterior)',
+    regularizacion_tierras: 'Tierras (anterior)',
+    asuntos_inmobiliarios: 'Inmobiliarios (anterior)',
+    poderes_registro_publico: 'Poderes y Registro (anterior)',
+  };
+
+  const DEADLINE_LABELS = {
+    si: 'Sí',
+    no: 'No',
+    no_seguro: 'No está seguro',
   };
 
   const STATUS_LABELS = {
@@ -102,8 +118,9 @@
       if (search) {
         var searchFields = [
           lead.full_name,
-          lead.phone,
+          lead.phone || '',
           lead.email || '',
+          lead.client_country || '',
           AREA_LABELS[lead.legal_area] || lead.legal_area,
         ].join(' ').toLowerCase();
         if (searchFields.indexOf(search) === -1) return false;
@@ -143,8 +160,10 @@
       return '<tr data-id="' + lead.id + '">' +
         '<td>' + formatDateShort(lead.created_at) + '</td>' +
         '<td class="lead-name">' + escapeHtml(lead.full_name) + '</td>' +
-        '<td class="lead-phone">' + escapeHtml(lead.phone) + '</td>' +
-        '<td><span class="lead-area-badge">' + (AREA_LABELS[lead.legal_area] || lead.legal_area) + '</span></td>' +
+        // Desde la migración 003 un lead puede traer sólo correo.
+        '<td class="lead-phone">' + escapeHtml(lead.phone || lead.email || '—') + '</td>' +
+        '<td><span class="lead-area-badge">' + escapeHtml(AREA_LABELS[lead.legal_area] || lead.legal_area) +
+        (lead.has_deadline === 'si' ? ' · plazo' : '') + '</span></td>' +
         '<td><span class="lead-status-badge ' + lead.status + '">' + (STATUS_LABELS[lead.status] || lead.status) + '</span></td>' +
         '<td><button type="button" class="view-btn">Ver</button></td>' +
         '</tr>';
@@ -189,9 +208,13 @@
     // Fill modal data
     document.getElementById('modalName').textContent = lead.full_name;
     document.getElementById('modalDate').textContent = 'Creado: ' + formatDate(lead.created_at);
-    document.getElementById('modalPhone').textContent = lead.phone;
+    document.getElementById('modalPhone').textContent = lead.phone || '—';
     document.getElementById('modalEmail').textContent = lead.email || '—';
     document.getElementById('modalArea').textContent = AREA_LABELS[lead.legal_area] || lead.legal_area;
+    document.getElementById('modalCountry').textContent = lead.client_country || '—';
+    var deadline = lead.has_deadline ? (DEADLINE_LABELS[lead.has_deadline] || lead.has_deadline) : '—';
+    if (lead.deadline_date) deadline += ' (fecha indicada: ' + lead.deadline_date + ')';
+    document.getElementById('modalDeadline').textContent = deadline;
     document.getElementById('modalSource').textContent = lead.source || 'web_form';
     document.getElementById('modalSummary').textContent = lead.case_summary;
     document.getElementById('modalStatus').value = lead.status;
@@ -207,12 +230,19 @@
       lcInput.value = '';
     }
 
-    // WhatsApp link
-    var phoneDigits = lead.phone.replace(/\D/g, '');
-    if (!phoneDigits.startsWith('507') && phoneDigits.length <= 8) {
-      phoneDigits = '507' + phoneDigits;
+    // WhatsApp link. Sin teléfono (lead sólo con correo) se oculta el botón.
+    var waLink = document.getElementById('modalPhoneWA');
+    if (lead.phone) {
+      var phoneDigits = lead.phone.replace(/\D/g, '');
+      if (!phoneDigits.startsWith('507') && phoneDigits.length <= 8) {
+        phoneDigits = '507' + phoneDigits;
+      }
+      waLink.href = 'https://wa.me/' + phoneDigits;
+      waLink.hidden = false;
+    } else {
+      waLink.removeAttribute('href');
+      waLink.hidden = true;
     }
-    document.getElementById('modalPhoneWA').href = 'https://wa.me/' + phoneDigits;
 
     // Load audit log
     loadAuditLog(leadId);

@@ -656,3 +656,96 @@ body {
   .leads-table { font-size: 0.78rem; }
   .leads-table td, .leads-table th { padding: 0.6rem 0.5rem; }
 }
+
+/* El atributo hidden debe ganar a display de .wa-link (lead sin teléfono). */
+[hidden] {
+  display: none !important;
+}
+
+/* ============================================================
+   ORIGEN DE VISITAS Y CONTACTOS (js/admin-analytics.js)
+   Reutiliza .stats-bar, .stat-card y .leads-table.
+   ============================================================ */
+.origin-panel {
+  margin-bottom: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.origin-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.origin-head h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+}
+.origin-note {
+  max-width: 62ch;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--gray);
+}
+.origin-note span { display: block; margin-top: 0.2rem; color: var(--gold-light); }
+.origin-period {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.origin-period select {
+  background: var(--navy-mid);
+  color: var(--white);
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 0.55rem 0.8rem;
+  font-family: var(--font-sans);
+}
+.origin-status {
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
+  border-left: 2px solid var(--warning);
+  background: rgba(255,152,0,0.08);
+  font-size: 0.82rem;
+  color: var(--text-body);
+}
+.origin-tables {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.5rem;
+}
+.origin-table caption {
+  text-align: left;
+  padding: 0 0 0.7rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.origin-table td { color: var(--text-body); }
+.origin-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--white); }
+.leads-table thead th.origin-num { text-align: right; }
+.origin-tables > * { min-width: 0; }
+.origin-tables .leads-table-wrap { overflow-x: auto; }
+.origin-group { color: var(--white); }
+.origin-detail { margin-top: 0.2rem; font-size: 0.72rem; color: var(--gray); word-break: break-word; }
+.origin-empty { color: var(--gray); font-style: italic; }
+.origin-help {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+.origin-help summary { cursor: pointer; color: var(--gold-light); }
+.origin-help ul { margin: 0.8rem 0 0 1.2rem; line-height: 1.7; }
+.origin-help strong { color: var(--text-body); font-weight: 500; }
+@media (max-width: 1024px) {
+  .origin-tables { grid-template-columns: 1fr; }
+}
