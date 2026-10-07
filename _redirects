@@ -10,12 +10,50 @@
 # corresponden a archivos existentes.
 https://nelsonruiz-asociados.netlify.app/*  https://juriscorppanama.com/:splat  301!
 
-# Redirigir siempre a HTTPS (Netlify lo hace por defecto, pero buena práctica)
+# ------------------------------------------------------------
+# ARCHIVOS INTERNOS: NO SE SIRVEN
+# ------------------------------------------------------------
+# Netlify publica la RAÍZ del repositorio, así que todo lo versionado es
+# descargable salvo que una regla lo impida.
+#
+# El "!" es IMPRESCINDIBLE. Sin él, Netlify no aplica la regla cuando existe
+# un fichero en esa ruta ("shadowing"), que es justo el caso aquí. La regla
+# anterior para /supabase/* no lo llevaba y por eso no tenía efecto.
+#
+# assets/Site_Memory/ es documentación interna que no debe versionarse nunca
+# (ver .gitignore); la regla es una segunda barrera por si alguien la añade.
+#
+# Van ANTES de "/assets/*" y del resto: Netlify aplica la primera que casa.
+/assets/Site_Memory/*   /404.html  404!
+/supabase/*             /404.html  404!
+/docs/*                 /404.html  404!
+/scripts/*              /404.html  404!
+/tests/*                /404.html  404!
+/README.md              /404.html  404!
+/OPERATIONS_GUIDE.md    /404.html  404!
+/SECURITY_CHECKLIST.md  /404.html  404!
+/SEO_CHECKLIST.md       /404.html  404!
+/package.json           /404.html  404!
+/package-lock.json      /404.html  404!
+
+# ------------------------------------------------------------
+# PÁGINAS DE SERVICIOS RETIRADOS
+# ------------------------------------------------------------
+# Derecho penal dejó de ofrecerse en la reestructuración de 2026-10. NO se
+# redirige a otro servicio: ninguno es equivalente, y un 301 a una página que
+# no responde a lo que se buscó es una mala experiencia y Google lo trata como
+# soft 404. Se elimina la página y la URL devuelve un 404 real con la página
+# de error, que enlaza a los servicios vigentes.
+# Opción a valorar tras publicar: 410 (Gone) en lugar de 404 acelera la
+# retirada del índice. Comprobar en la previsualización que Netlify lo aplica
+# antes de adoptarlo.
+/derecho-penal          /404.html     404
+/derecho-penal.html     /404.html     404
+/en/criminal-law        /en/404.html  404
+/en/criminal-law.html   /en/404.html  404
+
 # Sirve la carpeta admin correctamente
 /admin/*  /admin/:splat  200
-
-# Redirecciones para evitar que la gente intente leer los archivos de logica backend
-/supabase/*  /404.html  404
 /css/*       /css/:splat 200
 /js/*        /js/:splat  200
 /assets/*    /assets/:splat 200

@@ -9,3 +9,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Memoria y documentación interna del sitio (posicionamiento, decisiones,
+# datos del despacho). El repositorio es PÚBLICO y Netlify publica la raíz:
+# nada de aquí puede versionarse. Ver la regla equivalente en _redirects.
+assets/Site_Memory/
