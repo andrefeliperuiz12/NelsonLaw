@@ -266,7 +266,9 @@
   font-size: 0.74rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.1em;
-  color: rgba(201, 168, 76, 0.65);
+  /* 0.8 y no 0.65: con 0.65 el contraste era 3.9:1, por debajo del 4.5:1 de
+     WCAG AA para texto de este tamaño. 0.8 da 5.1-5.5:1 en los tres fondos. */
+  color: rgba(201, 168, 76, 0.8);
   padding-top: 0.35rem;
 }
 
@@ -585,7 +587,8 @@
 .area-sibling-num {
   font-size: 0.72rem;
   letter-spacing: 0.1em;
-  color: rgba(201, 168, 76, 0.6);
+  /* Mismo motivo que .area-service-num: contraste mínimo de WCAG AA. */
+  color: rgba(201, 168, 76, 0.8);
   font-variant-numeric: tabular-nums;
 }
 

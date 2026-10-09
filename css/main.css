@@ -112,6 +112,11 @@ ol {
   height: 60px;
   width: auto;
   display: block;
+  /* En pantallas estrechas la barra encoge el ancho del logo y no su alto:
+     sin esto se pintaba aplastado (143x60 en lugar de 3:1). contain lo
+     dibuja con su proporción dentro del mismo espacio. */
+  object-fit: contain;
+  object-position: left center;
   transition: opacity 0.3s;
 }
 
