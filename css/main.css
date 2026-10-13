@@ -1562,7 +1562,6 @@ footer {
   /* Contact form tighter on small phones to prevent overflow */
   .contact-form {
     padding: 1.5rem 1rem;
-    max-width: 100vw;
     box-sizing: border-box;
   }
 
@@ -1598,10 +1597,10 @@ footer {
 
   .section-inner {
     padding: 3rem 1rem;
-    /* Reduce padding on very small screens to fit content */
-    max-width: 100vw;
     box-sizing: border-box;
-    overflow-x: hidden;
+    /* Sin overflow-x: hidden ni max-width: 100vw. Esos dos recortaban en
+       silencio lo que no cabía: la sección de contacto se veía cortada por la
+       derecha sin ningún aviso. Ahora el contenido se adapta al ancho. */
   }
 
   /* Contact methods stack tighter */
@@ -2141,9 +2140,78 @@ section#faq .area-faq {
   }
 }
 
+
+/* ============================================================
+   SECCIÓN DE CONTACTO EN PANTALLAS PEQUEÑAS (2026-10)
+   Bug: en teléfonos el formulario y los bloques de contacto se salían por la
+   derecha y se veían cortados. Causa: una columna "1fr" no baja del ancho
+   mínimo de su contenido, y el widget de Cloudflare Turnstile (300 px como
+   mínimo) la ensanchaba más que la pantalla. Como la sección recortaba el
+   exceso, no había scroll: sólo contenido cortado.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contact-grid > *,
+  .contact-info,
+  .contact-form,
+  .contact-methods,
+  .form-fields,
+  .form-group {
+    min-width: 0;
+  }
+
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Texto de los bloques de contacto: puede partirse en vez de salirse. */
+  .contact-method > div {
+    min-width: 0;
+  }
+
+  .contact-method-value {
+    overflow-wrap: anywhere;
+  }
+
+  /* El widget no se recorta por los lados. */
+  .turnstile-wrapper {
+    overflow: visible;
+  }
+}
+
+/* El widget de Turnstile mide 300 px como mínimo y no se encoge solo. En
+   teléfonos más estrechos se escala por tramos para que quepa entera dentro
+   de la tarjeta (ancho de pantalla - 32 px de la sección - ~28 px de la
+   tarjeta). */
 @media (max-width: 359px) {
   .turnstile-wrapper .cf-turnstile {
-    transform: scale(0.86);
+    transform: scale(0.92);
     transform-origin: center top;
+    margin-bottom: -6px;
+  }
+}
+
+@media (max-width: 335px) {
+  .turnstile-wrapper .cf-turnstile {
+    transform: scale(0.85);
+    margin-bottom: -10px;
+  }
+}
+
+@media (max-width: 314px) {
+  .turnstile-wrapper .cf-turnstile {
+    transform: scale(0.78);
+    margin-bottom: -14px;
   }
 }
