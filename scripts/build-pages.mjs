@@ -170,7 +170,7 @@ function nav(lang, page, t) {
       <img src="/assets/img/logo-juris-360.png" alt="Juriscorp S.C. — Law Firm" class="nav-logo-img" width="360"
         height="120" decoding="async" />
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
 ${t.ui.nav.map((item) => `      <li><a href="${home(lang)}${item.hash}">${item.label}</a></li>`).join('\n')}
       <li><a href="${contactHref(lang, page.area)}" class="nav-cta">${t.ui.navCta}</a></li>
       <li>
@@ -179,6 +179,10 @@ ${t.ui.nav.map((item) => `      <li><a href="${home(lang)}${item.hash}">${item.l
         </a>
       </li>
     </ul>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="${attr(t.ui.menuLabel)}" aria-controls="navLinks"
+      aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>`;
 }
 
@@ -434,6 +438,7 @@ ${footer(lang, t)}
 
   <script src="/js/config.js" defer></script>
   <script src="/js/track.js" defer></script>
+  <script src="/js/nav.js" defer></script>
 
 </body>
 

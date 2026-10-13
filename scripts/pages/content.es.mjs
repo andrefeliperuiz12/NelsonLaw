@@ -23,6 +23,7 @@ const ui = {
   home: 'Inicio',
   ogLocale: 'es_PA',
   navLabel: 'Navegación principal',
+  menuLabel: 'Abrir menú',
   breadcrumbLabel: 'Ruta de navegación',
   nav: [
     { hash: '#servicios', label: 'Servicios' },

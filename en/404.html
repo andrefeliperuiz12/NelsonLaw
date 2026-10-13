@@ -18,22 +18,26 @@
 
 <body>
 
-  <nav class="navbar" id="navbar">
+  <nav class="navbar" id="navbar" aria-label="Main navigation">
     <a href="/en/" class="nav-logo">
       <img src="/assets/img/logo-juris-360.png" alt="Juriscorp S.C. — Law Firm" class="nav-logo-img" width="360"
         height="120" decoding="async" />
     </a>
-    <ul class="nav-links">
-      <li><a href="/en/#services">Practice Areas</a></li>
-      <li><a href="/en/#about">Experience</a></li>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="/en/#services">Services</a></li>
+      <li><a href="/en/#how-we-work">How we work</a></li>
       <li><a href="/en/#contact">Contact</a></li>
-      <li><a href="/en/#contact" class="nav-cta">Enquire Now</a></li>
+      <li><a href="/en/#contact" class="nav-cta">Request an assessment</a></li>
       <li>
         <a href="/" class="nav-lang" hreflang="es" lang="es">
           <span class="nav-lang-current">EN</span><span class="nav-lang-sep">/</span>ES
         </a>
       </li>
     </ul>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-controls="navLinks"
+      aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <header class="legal-hero">
@@ -101,6 +105,7 @@
     </div>
   </footer>
 
+  <script src="/js/nav.js" defer></script>
 </body>
 
 </html>

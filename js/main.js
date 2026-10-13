@@ -104,40 +104,8 @@
     });
   }
 
-  // --- MOBILE NAVIGATION ---
-  function initNavigation() {
-    const toggle = document.getElementById('navToggle');
-    const links = document.getElementById('navLinks');
-    const navbar = document.getElementById('navbar');
-
-    if (toggle && links) {
-      toggle.addEventListener('click', function () {
-        var isOpen = links.classList.toggle('open');
-        toggle.classList.toggle('active', isOpen);
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      });
-
-      // Close menu on link click
-      links.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
-          links.classList.remove('open');
-          toggle.classList.remove('active');
-          toggle.setAttribute('aria-expanded', 'false');
-        });
-      });
-    }
-
-    // Navbar scroll effect
-    if (navbar) {
-      window.addEventListener('scroll', function () {
-        if (window.scrollY > 50) {
-          navbar.classList.add('scrolled');
-        } else {
-          navbar.classList.remove('scrolled');
-        }
-      });
-    }
-  }
+  // La barra de navegación (menú móvil y efecto al desplazarse) vive en
+  // js/nav.js, que cargan todas las páginas y no sólo las portadas.
 
   // --- SCROLL REVEAL ANIMATIONS ---
   function initScrollReveal() {
@@ -474,7 +442,6 @@
 
   // --- INITIALIZE ---
   document.addEventListener('DOMContentLoaded', function () {
-    initNavigation();
     initScrollReveal();
     initForm();
     initFooterYear();

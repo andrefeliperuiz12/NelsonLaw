@@ -106,6 +106,8 @@ ol {
   align-items: center;
   text-decoration: none;
   line-height: 1;
+  /* El logo nunca cede ancho a los enlaces: encogido se veía aplastado. */
+  flex-shrink: 0;
 }
 
 .nav-logo-img {
@@ -126,6 +128,7 @@ ol {
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: 2.5rem;
   list-style: none;
 }
@@ -138,6 +141,9 @@ ol {
   text-decoration: none;
   transition: color 0.3s;
   font-weight: 400;
+  /* Un enlace de la barra no se parte nunca en dos líneas: el botón con borde
+     partido se veía como dos cajas rotas. Si no cabe, manda el menú móvil. */
+  white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -161,11 +167,22 @@ ol {
 .nav-toggle {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
   cursor: pointer;
   background: none;
   border: none;
-  padding: 4px;
+  /* 44x44: tamaño mínimo cómodo para el dedo. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin-right: -10px;
+}
+
+.nav-toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 .nav-toggle span {
@@ -943,7 +960,10 @@ section {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  /* Sin separación vertical: cada .form-group ya trae su margin-bottom. Con
+     gap en las dos direcciones, al apilarse en móvil los campos de una misma
+     fila quedaban al doble de distancia que el resto. */
+  gap: 0 1.5rem;
 }
 
 .form-group {
@@ -1371,69 +1391,9 @@ footer {
 
 /* --- RESPONSIVE --- */
 @media (max-width: 900px) {
-  #navbar {
-    padding: 1.2rem 2rem;
-  }
 
-  #navbar.scrolled {
-    padding: 0.8rem 2rem;
-  }
-
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--navy);
-    padding: 1.5rem 2rem;
-    border-top: 1px solid rgba(201, 168, 76, 0.15);
-    gap: 1.2rem;
-  }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  .nav-toggle {
-    display: flex;
-  }
-
-  /* --- NAVEGACIÓN MÓVIL EN LAS PÁGINAS SECUNDARIAS ---
-     El desplegable de arriba depende de un botón hamburguesa y de
-     js/main.js, y SÓLO las dos portadas (index.html y en/index.html) tienen
-     ambos. Las otras diez páginas se quedaban con .nav-links en display:none
-     y sin nada que lo abriera: en un teléfono no había forma de navegar.
-
-     Esas diez llevan class="navbar" en el <nav> y las dos portadas no, así
-     que la clase sirve para distinguirlas sin tocar el marcado. Aquí el menú
-     se muestra siempre, en fila compacta que envuelve si hace falta.
-
-     Si algún día se le añade la hamburguesa a estas páginas, hay que quitar
-     esta regla o se verán las dos cosas a la vez. */
-  #navbar.navbar .nav-links {
-    display: flex;
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: center;
-    background: none;
-    border-top: none;
-    padding: 0;
-    gap: 0.5rem 1rem;
-    max-width: 70%;
-  }
-
-  #navbar.navbar .nav-links a {
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
-  }
-
-  #navbar.navbar .nav-cta {
-    padding: 0.4rem 0.9rem;
-  }
+  /* La barra y el menú móvil están en el bloque "BARRA RESPONSIVE" al final
+     del archivo: el menú hamburguesa empieza en 1100 px, no en 900. */
 
   /* --- HERO MOBILE --- */
   .hero {
@@ -1571,20 +1531,6 @@ footer {
 }
 
 @media (max-width: 480px) {
-
-  /* En un teléfono estrecho, el menú compacto de las páginas secundarias
-     ocuparía dos o tres filas y empujaría la barra hacia abajo, tapando el
-     inicio del contenido. Se dejan sólo la llamada a la acción y el
-     conmutador de idioma, que es lo que de verdad se pulsa desde el móvil.
-     Los enlaces de sección siguen accesibles desde el pie. */
-  #navbar.navbar .nav-links>li:not(:has(.nav-cta)):not(:has(.nav-lang)) {
-    display: none;
-  }
-
-  #navbar.navbar .nav-links {
-    max-width: none;
-    gap: 0.5rem;
-  }
 
   .hero-content {
     padding: 7rem 1.5rem 2rem;
@@ -2043,5 +1989,161 @@ section#faq .area-faq {
   .hero-aside {
     opacity: 1;
     animation: none;
+  }
+}
+
+/* ============================================================
+   BARRA RESPONSIVE (2026-10)
+   Una sola barra para todas las páginas: completa en escritorio y menú
+   hamburguesa (js/nav.js) por debajo de 1100 px. La barra completa de la
+   portada necesita unos 1280 px sin partir textos; entre 1101 y 1320 px se
+   compacta en lugar de romperse.
+   ============================================================ */
+
+@media (min-width: 1101px) and (max-width: 1320px) {
+  #navbar,
+  #navbar.scrolled {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .nav-links {
+    gap: 1.5rem;
+  }
+
+  .nav-links a {
+    letter-spacing: 0.12em;
+  }
+
+  .nav-cta {
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  #navbar {
+    padding: 0.9rem 1.5rem;
+  }
+
+  #navbar.scrolled {
+    padding: 0.6rem 1.5rem;
+  }
+
+  .nav-logo-img {
+    height: 48px;
+  }
+
+  #navbar.scrolled .nav-logo-img {
+    height: 36px;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  /* Panel desplegable bajo la barra. */
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem 1.5rem 1.5rem;
+    background: rgba(13, 27, 42, 0.98);
+    border-top: 1px solid rgba(201, 168, 76, 0.15);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.35);
+    max-height: calc(100vh - 70px);
+    max-height: calc(100dvh - 70px);
+    overflow-y: auto;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-links li:has(.nav-cta),
+  .nav-links li:has(.nav-lang) {
+    border-bottom: none;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 0.95rem 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-links .nav-cta {
+    margin-top: 1.1rem;
+    padding: 0.95rem 1rem;
+    text-align: center;
+  }
+
+  .nav-links .nav-lang {
+    display: inline-flex;
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+  }
+
+  /* Hamburguesa -> X al abrir. */
+  .nav-toggle.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-toggle.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+@media (max-width: 480px) {
+  #navbar {
+    padding: 0.7rem 1rem;
+  }
+
+  #navbar.scrolled {
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-logo-img {
+    height: 40px;
+  }
+
+  #navbar.scrolled .nav-logo-img {
+    height: 34px;
+  }
+
+  .nav-links {
+    padding: 0.25rem 1rem 1.25rem;
+  }
+
+  .hero-content {
+    padding-top: 6rem;
+  }
+}
+
+/* --- Formulario en teléfonos estrechos ---
+   El widget de Cloudflare Turnstile mide como mínimo 300 px. Con los márgenes
+   anteriores quedaba recortado en pantallas de 360 px o menos. */
+@media (max-width: 400px) {
+  .contact-form {
+    padding: 1.5rem 0.8rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .turnstile-wrapper .cf-turnstile {
+    transform: scale(0.86);
+    transform-origin: center top;
   }
 }

@@ -18,6 +18,7 @@ const ui = {
   home: 'Home',
   ogLocale: 'en_US',
   navLabel: 'Main navigation',
+  menuLabel: 'Open menu',
   breadcrumbLabel: 'Breadcrumb',
   nav: [
     { hash: '#services', label: 'Services' },

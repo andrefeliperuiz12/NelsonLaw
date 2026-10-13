@@ -129,7 +129,7 @@
       <img src="/assets/img/logo-juris-360.png" alt="Juriscorp S.C. — Law Firm" class="nav-logo-img" width="360"
         height="120" decoding="async" />
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="/en/#services">Services</a></li>
       <li><a href="/en/#how-we-work">How we work</a></li>
       <li><a href="/en/#contact">Contact</a></li>
@@ -140,6 +140,10 @@
         </a>
       </li>
     </ul>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-controls="navLinks"
+      aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <header class="area-hero">
@@ -493,6 +497,7 @@
 
   <script src="/js/config.js" defer></script>
   <script src="/js/track.js" defer></script>
+  <script src="/js/nav.js" defer></script>
 
 </body>
 

@@ -773,3 +773,17 @@
 .area-siblings-grid--many .area-sibling-name {
   font-size: 1.22rem;
 }
+
+/* La barra mide menos en tableta y móvil (css/main.css, BARRA RESPONSIVE):
+   se reduce el espacio sobre la miga de pan para no dejar un hueco vacío. */
+@media (max-width: 1100px) {
+  .area-hero {
+    padding-top: 8.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .area-hero {
+    padding-top: 7rem;
+  }
+}
