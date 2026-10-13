@@ -1290,6 +1290,13 @@ footer {
   font-weight: 300;
 }
 
+/* Fecha de última actualización del contenido (señal de vigencia para
+   buscadores y lectores). Discreta: misma letra que el copyright. */
+.footer-updated {
+  display: block;
+  margin-top: 0.35rem;
+}
+
 .footer-links {
   display: flex;
   gap: 2rem;

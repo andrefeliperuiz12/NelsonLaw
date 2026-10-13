@@ -6,11 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Under ~60 characters: Google truncates longer titles. -->
-  <title>Juriscorp S.C. | Lawyers in Panama: Residency &amp; Business</title>
+  <title>English-Speaking Lawyers in Panama | Juriscorp S.C.</title>
   <meta name="description"
-    content="Legal advice in Panama for individuals and companies, in the country or abroad: residency, work permits, contracts, real estate and matters before public authorities." />
+    content="Lawyers in Panama serving individuals and companies in English and Spanish: residency, work permits, contracts, real estate and public-authority matters." />
   <meta name="author" content="Juriscorp S.C." />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href="https://juriscorppanama.com/en/" />
 
   <!-- hreflang: cada página apunta a su equivalente en el otro idioma.
@@ -26,9 +26,9 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Juriscorp S.C." />
   <meta property="og:url" content="https://juriscorppanama.com/en/" />
-  <meta property="og:title" content="Juriscorp S.C. | Lawyers in Panama" />
+  <meta property="og:title" content="Juriscorp S.C. | English-Speaking Lawyers in Panama" />
   <meta property="og:description"
-    content="Residency and work permits, contracts, companies and real estate, and administrative, tax and constitutional matters in Panama." />
+    content="Residency and work permits, contracts, companies and real estate, and administrative, tax and constitutional matters in Panama. Service in English and Spanish." />
   <meta property="og:image" content="https://juriscorppanama.com/assets/img/square-logo-og.png" />
   <meta property="og:image:width" content="600" />
   <meta property="og:image:height" content="600" />
@@ -37,68 +37,19 @@
   <meta property="og:locale:alternate" content="es_PA" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Juriscorp S.C. | Lawyers in Panama" />
+  <meta name="twitter:title" content="Juriscorp S.C. | English-Speaking Lawyers in Panama" />
   <meta name="twitter:description"
     content="Residency, work permits, contracts, real estate and matters before public authorities in Panama." />
   <meta name="twitter:image" content="https://juriscorppanama.com/assets/img/square-logo-og.png" />
+  <meta name="twitter:image:alt" content="Juriscorp S.C. logo, law firm in Panama City" />
 
-  <!-- Structured Data.
-       NO se repite el nodo LegalService: es la MISMA organización que declara
-       la portada en español, con el mismo @id. Duplicarlo con otro @id le diría
-       a Google que son dos despachos distintos. Aquí sólo va esta página,
-       referida a esa misma entidad, y sus preguntas frecuentes (las mismas que
-       se ven en #faq). -->
+  <!-- Structured Data. Este bloque JSON-LD lo regenera scripts/build-pages.mjs:
+       la firma, el abogado y el sitio salen de scripts/pages/schema.mjs y se
+       repiten en cada página con el MISMO @id (es la misma entidad que la de
+       la portada en español, no un segundo despacho). A mano sólo se edita el
+       FAQPage, que debe coincidir con las preguntas visibles de #faq. -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "@id": "https://juriscorppanama.com/en/",
-        "url": "https://juriscorppanama.com/en/",
-        "name": "Juriscorp S.C. | Lawyers in Panama",
-        "inLanguage": "en",
-        "description": "Legal advice in Panama for individuals and companies, in the country or abroad: residency, work permits, legal relocation, contracts, companies and real estate, and administrative, tax, constitutional and administrative litigation matters.",
-        "about": {"@id": "https://juriscorppanama.com/#organizacion"},
-        "publisher": {"@id": "https://juriscorppanama.com/#organizacion"}
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Do I need to be in Panama to get started?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Not for the assessment or for preparing documents, which are done remotely. Some procedures require the person concerned to appear in Panama; we tell you before accepting the engagement."}
-          },
-          {
-            "@type": "Question",
-            "name": "Does sending an enquiry commit me or create an attorney-client relationship?",
-            "acceptedAnswer": {"@type": "Answer", "text": "No. The enquiry helps us assess whether we can help. Before accepting a matter we check for conflicts of interest, and the engagement is formalised only through a written proposal that you accept."}
-          },
-          {
-            "@type": "Question",
-            "name": "What should I send at the start?",
-            "acceptedAnswer": {"@type": "Answer", "text": "A short summary, the country you are in and, if there is one, the date of a notice or deadline. Do not send passports, full case files or health data through the form; if needed, we will ask for them through an agreed channel."}
-          },
-          {
-            "@type": "Question",
-            "name": "How are fees set?",
-            "acceptedAnswer": {"@type": "Answer", "text": "In a written proposal based on the scope of the matter. Fees are listed separately from third-party costs such as government fees, apostilles, translations or notary charges."}
-          },
-          {
-            "@type": "Question",
-            "name": "In which language will my matter be handled?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Proceedings before Panamanian authorities are conducted in Spanish, and foreign documents usually need an official translation. Tell us in your enquiry which language you prefer; in our reply we will confirm whether we can work with you in that language or whether an interpreter or translator will be needed."}
-          },
-          {
-            "@type": "Question",
-            "name": "Which matters do you not handle?",
-            "acceptedAnswer": {"@type": "Answer", "text": "We do not currently offer criminal defence, employment litigation, boundary disputes or agrarian proceedings, electoral matters or naturalisation. If your enquiry does not fit our services, we will tell you."}
-          }
-        ]
-      }
-    ]
-  }
+  {"@context":"https://schema.org","@graph":[{"@type":"LegalService","@id":"https://juriscorppanama.com/#organizacion","name":"Juriscorp S.C.","description":"Legal advice in Panama, in English and Spanish, for individuals and companies, in the country or abroad: residency and immigration, work permits, legal relocation, contracts, companies and real estate, and administrative, tax, constitutional and administrative litigation matters.","url":"https://juriscorppanama.com/en/","logo":"https://juriscorppanama.com/assets/img/square-logo-og.png","image":"https://juriscorppanama.com/assets/img/square-logo-og.png","telephone":"+507-6673-0357","email":"juriscorplawfirm@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Ancón","addressRegion":"Panamá","addressCountry":"PA"},"areaServed":{"@type":"Country","name":"Panama"},"availableLanguage":[{"@type":"Language","name":"Spanish","alternateName":"es"},{"@type":"Language","name":"English","alternateName":"en"}],"knowsLanguage":["es","en"],"knowsAbout":["Panama residency","Work permits for foreign nationals","Legal relocation to Panama","Contracts, companies and real estate in Panama","Panamanian administrative law","Panamanian tax law","Panamanian constitutional and administrative litigation"],"contactPoint":{"@type":"ContactPoint","contactType":"New client enquiries","telephone":"+507-6673-0357","email":"juriscorplawfirm@gmail.com","url":"https://juriscorppanama.com/en/#contact","availableLanguage":[{"@type":"Language","name":"Spanish","alternateName":"es"},{"@type":"Language","name":"English","alternateName":"en"}]},"hasOfferCatalog":{"@type":"OfferCatalog","name":"Legal services","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/panama-residency#servicio","name":"Residency & immigration","url":"https://juriscorppanama.com/en/panama-residency"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/work-permits#servicio","name":"Work permits","url":"https://juriscorppanama.com/en/work-permits"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/legal-relocation#servicio","name":"Legal relocation","url":"https://juriscorppanama.com/en/legal-relocation"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/contracts-companies-real-estate#servicio","name":"Contracts, companies & real estate","url":"https://juriscorppanama.com/en/contracts-companies-real-estate"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/administrative-law#servicio","name":"Administrative law","url":"https://juriscorppanama.com/en/administrative-law"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/tax-law#servicio","name":"Tax law","url":"https://juriscorppanama.com/en/tax-law"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/en/constitutional-administrative-litigation#servicio","name":"Constitutional & administrative litigation","url":"https://juriscorppanama.com/en/constitutional-administrative-litigation"}}]},"founder":{"@id":"https://juriscorppanama.com/#nelson-ruiz"},"privacyPolicy":"https://juriscorppanama.com/en/privacy"},{"@type":"Person","@id":"https://juriscorppanama.com/#nelson-ruiz","name":"Nelson Ruiz Pinilla","jobTitle":"Attorney","description":"Attorney in Panama with a legal career since 1993 and lead attorney of Juriscorp S.C. Works in English and Spanish.","image":"https://juriscorppanama.com/assets/img/nelson-ruiz-960.jpg","url":"https://juriscorppanama.com/en/#about","knowsLanguage":["es","en"],"knowsAbout":["Panama residency","Work permits for foreign nationals","Legal relocation to Panama","Contracts, companies and real estate in Panama","Panamanian administrative law","Panamanian tax law","Panamanian constitutional and administrative litigation"],"worksFor":{"@id":"https://juriscorppanama.com/#organizacion"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Universidad de Panamá"}},{"@type":"WebSite","@id":"https://juriscorppanama.com/#sitio","url":"https://juriscorppanama.com/","name":"Juriscorp S.C.","inLanguage":["es","en"],"publisher":{"@id":"https://juriscorppanama.com/#organizacion"}},{"@type":"WebPage","@id":"https://juriscorppanama.com/en/#pagina","url":"https://juriscorppanama.com/en/","name":"English-Speaking Lawyers in Panama | Juriscorp S.C.","description":"Lawyers in Panama serving individuals and companies in English and Spanish: residency, work permits, contracts, real estate and public-authority matters.","inLanguage":"en","isPartOf":{"@id":"https://juriscorppanama.com/#sitio"},"about":{"@id":"https://juriscorppanama.com/#organizacion"},"publisher":{"@id":"https://juriscorppanama.com/#organizacion"},"dateModified":"2026-10-13"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need to be in Panama to get started?","acceptedAnswer":{"@type":"Answer","text":"Not for the assessment or for preparing documents, which are done remotely. Some procedures require the person concerned to appear in Panama; we tell you before accepting the engagement."}},{"@type":"Question","name":"Does sending an enquiry commit me or create an attorney-client relationship?","acceptedAnswer":{"@type":"Answer","text":"No. The enquiry helps us assess whether we can help. Before accepting a matter we check for conflicts of interest, and the engagement is formalised only through a written proposal that you accept."}},{"@type":"Question","name":"What should I send at the start?","acceptedAnswer":{"@type":"Answer","text":"A short summary, the country you are in and, if there is one, the date of a notice or deadline. Do not send passports, full case files or health data through the form; if needed, we will ask for them through an agreed channel."}},{"@type":"Question","name":"How are fees set?","acceptedAnswer":{"@type":"Answer","text":"In a written proposal based on the scope of the matter. Fees are listed separately from third-party costs such as government fees, apostilles, translations or notary charges."}},{"@type":"Question","name":"Can you handle my matter in English?","acceptedAnswer":{"@type":"Answer","text":"Yes. We handle enquiries in English and Spanish, so you can write to us in whichever you prefer. Proceedings before Panamanian authorities are conducted in Spanish, and foreign documents usually need an official translation; during the assessment we tell you which documents need translating."}},{"@type":"Question","name":"Which matters do you not handle?","acceptedAnswer":{"@type":"Answer","text":"We do not currently offer criminal defence, employment litigation, boundary disputes or agrarian proceedings, electoral matters or naturalisation. If your enquiry does not fit our services, we will tell you."}}],"@id":"https://juriscorppanama.com/en/#preguntas","inLanguage":"en"}]}
   </script>
 
   <!-- Fonts — SELF-HOSTED. Do not link fonts.googleapis.com: it hands every
@@ -160,6 +111,7 @@
       </div>
       <p class="hero-aside">
         Not sure which service you need? <a href="#situations">Start from your situation</a>.
+        We work in English and Spanish.
       </p>
     </div>
 
@@ -392,6 +344,9 @@
             That experience, together with his training in administrative law, shapes how Juriscorp works:
             careful analysis, well-built documents and deadlines under control.
           </p>
+          <p class="about-text">
+            He works with clients in English and Spanish, including those who enquire from abroad.
+          </p>
 
           <div class="about-stats">
             <div>
@@ -504,13 +459,13 @@
         </details>
 
         <details>
-          <summary>In which language will my matter be handled?</summary>
+          <summary>Can you handle my matter in English?</summary>
           <div class="area-faq-answer">
             <p>
-              Proceedings before Panamanian authorities are conducted in Spanish, and foreign documents
-              usually need an official translation. Tell us in your enquiry which language you prefer; in
-              our reply we will confirm whether we can work with you in that language or whether an
-              interpreter or translator will be needed.
+              Yes. We handle enquiries in English and Spanish, so you can write to us in whichever you
+              prefer. Proceedings before Panamanian authorities are conducted in Spanish, and foreign
+              documents usually need an official translation; during the assessment we tell you which
+              documents need translating.
             </p>
           </div>
         </details>
@@ -752,6 +707,7 @@
       </ul>
       <div class="footer-copy">
         &copy; <span id="footerYear">2026</span> Juriscorp S.C. All rights reserved.
+        <span class="footer-updated">Last updated: <time datetime="2026-10-13">October 13, 2026</time></span>
       </div>
       <div class="footer-confidentiality">
         Information provided through this site is treated confidentially. This site does not constitute

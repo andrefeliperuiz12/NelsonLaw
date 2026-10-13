@@ -20,17 +20,26 @@
 // HTML escrito a mano.
 // ============================================================
 
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { SITE, PAGE_ORDER, STATIC_PAGES } from './pages/site.mjs';
 import es from './pages/content.es.mjs';
 import en from './pages/content.en.mjs';
 import { LLMS } from './pages/llms.mjs';
+import {
+  ORG_ID,
+  SITE_ID,
+  organizationNode,
+  personNode,
+  websiteNode,
+  LANGUAGES,
+} from './pages/schema.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const LANGS = { es, en };
-const LASTMOD = process.env.LASTMOD || new Date().toISOString().slice(0, 10);
+// Fecha de última modificación del contenido (SITE.modified), no la del build.
+const LASTMOD = process.env.LASTMOD || SITE.modified;
 
 // --- utilidades ---------------------------------------------------------
 
@@ -69,12 +78,33 @@ function whatsappHref(text) {
   return `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text)}`;
 }
 
+// "13 de octubre de 2026" / "October 13, 2026". UTC para que no dependa de la
+// zona horaria de quien ejecute el script.
+function longDate(lang, iso) {
+  return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'es-PA', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(iso + 'T00:00:00Z'));
+}
+
 function indent(html, spaces) {
   const pad = ' '.repeat(spaces);
   return html
     .split('\n')
     .map((line) => (line.trim() ? pad + line : line))
     .join('\n');
+}
+
+// Servicios en el idioma de la página, en el orden de la portada. El @id es el
+// mismo que lleva el nodo Service de cada página de servicio.
+function serviceList(lang) {
+  return PAGE_ORDER.map((key) => {
+    const p = LANGS[lang].pages[key];
+    const href = url(lang, p.slug);
+    return { id: href + '#servicio', name: p.cardName, url: href };
+  });
 }
 
 // --- bloques ------------------------------------------------------------
@@ -84,11 +114,35 @@ function head(lang, page, t) {
   const enUrl = url('en', SITE.slugs[page.key].en);
   const self = url(lang, page.slug);
 
+  const serviceId = self + '#servicio';
+  const other = lang === 'en' ? 'es' : 'en';
+
   const graph = {
     '@context': 'https://schema.org',
     '@graph': [
+      // La firma, el abogado y el sitio se repiten en cada página con el mismo
+      // @id (ver scripts/pages/schema.mjs): así cada página se entiende sola.
+      organizationNode(lang, serviceList(lang)),
+      personNode(lang),
+      websiteNode(),
+      {
+        '@type': 'WebPage',
+        '@id': self + '#pagina',
+        url: self,
+        name: plain(page.title),
+        description: page.description,
+        inLanguage: lang,
+        isPartOf: { '@id': SITE_ID },
+        about: { '@id': serviceId },
+        mainEntity: { '@id': serviceId },
+        breadcrumb: { '@id': self + '#migas' },
+        publisher: { '@id': ORG_ID },
+        datePublished: SITE.published,
+        dateModified: SITE.modified,
+      },
       {
         '@type': 'BreadcrumbList',
+        '@id': self + '#migas',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: t.ui.home, item: SITE.origin + home(lang) },
           { '@type': 'ListItem', position: 2, name: plain(page.breadcrumb), item: self },
@@ -96,17 +150,27 @@ function head(lang, page, t) {
       },
       {
         '@type': 'Service',
+        '@id': serviceId,
         name: plain(page.schemaName),
         serviceType: plain(page.breadcrumb),
         url: self,
         inLanguage: lang,
-        provider: { '@id': SITE.origin + '/#organizacion' },
-        areaServed: { '@type': 'Country', name: 'Panamá' },
+        provider: { '@id': ORG_ID },
+        areaServed: { '@type': 'Country', name: lang === 'en' ? 'Panama' : 'Panamá' },
         audience: { '@type': 'Audience', audienceType: plain(page.audience.value) },
         description: page.description,
+        availableChannel: {
+          '@type': 'ServiceChannel',
+          name: t.ui.channelName,
+          serviceUrl: SITE.origin + contactHref(lang, page.area),
+          availableLanguage: LANGUAGES,
+        },
       },
       {
         '@type': 'FAQPage',
+        '@id': self + '#preguntas',
+        inLanguage: lang,
+        about: { '@id': serviceId },
         mainEntity: page.faq.map((item) => ({
           '@type': 'Question',
           name: plain(item.q),
@@ -130,7 +194,7 @@ function head(lang, page, t) {
   <link rel="alternate" hreflang="es" href="${esUrl}" />
   <link rel="alternate" hreflang="en" href="${enUrl}" />
   <link rel="alternate" hreflang="x-default" href="${esUrl}" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="author" content="Juriscorp S.C." />
 
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png" />
@@ -145,8 +209,16 @@ function head(lang, page, t) {
   <meta property="og:image" content="${SITE.origin}/assets/img/square-logo-og.png" />
   <meta property="og:image:width" content="600" />
   <meta property="og:image:height" content="600" />
+  <meta property="og:image:alt" content="${attr(t.ui.logoAlt)}" />
   <meta property="og:locale" content="${t.ui.ogLocale}" />
+  <meta property="og:locale:alternate" content="${LANGS[other].ui.ogLocale}" />
+  <meta property="article:published_time" content="${SITE.published}" />
+  <meta property="article:modified_time" content="${SITE.modified}" />
   <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="${attr(page.title)}" />
+  <meta name="twitter:description" content="${attr(page.description)}" />
+  <meta name="twitter:image" content="${SITE.origin}/assets/img/square-logo-og.png" />
+  <meta name="twitter:image:alt" content="${attr(t.ui.logoAlt)}" />
 
   <!-- Fonts: auto-alojadas. No enlazar fonts.googleapis.com. Ver css/fonts.css. -->
   <link rel="stylesheet" href="/css/fonts.css" />
@@ -156,7 +228,7 @@ function head(lang, page, t) {
   <!-- Las preguntas de FAQPage son las mismas que se ven al final de la
        página: ambas salen del mismo dato. -->
   <script type="application/ld+json">
-${indent(JSON.stringify(graph, null, 2), 2)}
+${indent(JSON.stringify(graph), 2)}
   </script>
 </head>`;
 }
@@ -403,6 +475,7 @@ ${links}
       </ul>
       <div class="footer-copy">
         &copy; 2026 Juriscorp S.C. ${t.ui.rights}
+        <span class="footer-updated">${t.ui.updatedLabel} <time datetime="${SITE.modified}">${longDate(lang, SITE.modified)}</time></span>
       </div>
     </div>
   </footer>`;
@@ -410,7 +483,10 @@ ${links}
 
 function render(lang, key) {
   const t = LANGS[lang];
-  const page = { key, ...t.pages[key] };
+  const base = t.pages[key];
+  // La pregunta sobre el idioma es la misma en todas las páginas (ui.languageFaq):
+  // es de las que más se le hacen a un despacho a quien llega desde el exterior.
+  const page = { key, ...base, faq: [...base.faq, t.ui.languageFaq] };
   return `<!DOCTYPE html>
 <html lang="${lang}">
 
@@ -463,7 +539,7 @@ function sitemap() {
     <xhtml:link rel="alternate" hreflang="es" href="${es}" />
     <xhtml:link rel="alternate" hreflang="en" href="${en}" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${es}" />
-    <lastmod>${LASTMOD}</lastmod>
+    <lastmod>${page.lastmod || LASTMOD}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>`);
@@ -568,7 +644,56 @@ ${en.l.contactLine(en.contact)}
 ## ${es.l.optionalTitle} / ${en.l.optionalTitle}
 
 ${optional.map((o) => `- ${o}`).join('\n')}
+- Última actualización / Last updated: ${SITE.modified}.
 `;
+}
+
+// --- portadas ------------------------------------------------------------
+// index.html y en/index.html siguen siendo HTML escrito a mano, pero su bloque
+// JSON-LD comparte la definición de la firma con el resto de páginas. Aquí se
+// regenera todo MENOS el FAQPage, que debe coincidir con las preguntas visibles
+// de cada portada y se edita a mano junto a ellas.
+const LD_RE = /(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/;
+
+function syncHome(lang) {
+  const file = join(ROOT, lang === 'en' ? 'en/index.html' : 'index.html');
+  const html = readFileSync(file, 'utf8');
+  const match = html.match(LD_RE);
+  if (!match) throw new Error(`${file}: sin bloque JSON-LD`);
+  const faqNode = JSON.parse(match[2])['@graph'].find((n) => n['@type'] === 'FAQPage');
+  if (!faqNode) throw new Error(`${file}: el JSON-LD no tiene FAQPage`);
+
+  const self = SITE.origin + home(lang);
+  const title = html.match(/<title>([\s\S]*?)<\/title>/)[1].trim();
+  const description = html.match(/<meta name="description"\s+content="([^"]*)"/)[1];
+  const unescape = (v) => v.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+  const graph = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      organizationNode(lang, serviceList(lang)),
+      personNode(lang),
+      websiteNode(),
+      {
+        '@type': 'WebPage',
+        '@id': self + '#pagina',
+        url: self,
+        name: unescape(title),
+        description: unescape(description),
+        inLanguage: lang,
+        isPartOf: { '@id': SITE_ID },
+        about: { '@id': ORG_ID },
+        publisher: { '@id': ORG_ID },
+        dateModified: SITE.modified,
+      },
+      { ...faqNode, '@id': self + '#preguntas', inLanguage: lang },
+    ],
+  };
+  const next = html.replace(LD_RE, (_m, open, _body, close) => `${open}
+${indent(JSON.stringify(graph), 2)}
+  ${close}`);
+  writeFileSync(file, next);
+  console.log('JSON-LD sincronizado', file.replace(ROOT, ''));
 }
 
 // --- escritura ----------------------------------------------------------
@@ -581,6 +706,7 @@ for (const lang of Object.keys(LANGS)) {
     console.log('escrito', file.replace(ROOT, ''));
   }
 }
+for (const lang of Object.keys(LANGS)) syncHome(lang);
 writeFileSync(join(ROOT, 'sitemap.xml'), sitemap());
 console.log('escrito sitemap.xml');
 writeFileSync(join(ROOT, 'llms.txt'), llmsTxt());

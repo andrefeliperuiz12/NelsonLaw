@@ -6,8 +6,10 @@
 //
 // Same editorial rules as content.es.mjs, and the SAME SCOPE: every service,
 // inclusion and exclusion stated in Spanish must be stated here too.
-// Do not claim that the firm works in English: that is a pending decision
-// (see the restructuring report). The FAQ says so honestly.
+// Language of service: the owner confirmed on 2026-10-13 that enquiries are
+// handled in English and Spanish (the lead attorney is bilingual). Keep saying
+// that proceedings before the authorities are in Spanish and that foreign
+// documents usually need an official translation.
 // ============================================================
 
 import { SITE } from './site.mjs';
@@ -32,6 +34,17 @@ const ui = {
   siblingsTitle: 'Other services',
   disclaimer:
     'This page provides general information about Panamanian law. It is not legal advice and does not replace the analysis of a specific case. Sending an enquiry does not by itself create an attorney-client relationship: an engagement is formalised only by written agreement, after the matter has been assessed and checked for conflicts of interest.',
+  updatedLabel: 'Last updated:',
+  logoAlt: 'Juriscorp S.C. logo, law firm in Panama City',
+  channelName: 'Initial enquiry in English or Spanish',
+  // Added at the end of the questions on every service page.
+  languageFaq: {
+    q: 'Can you handle my matter in English?',
+    a: [
+      'Yes. We handle enquiries in English and Spanish, so you can write to us in whichever you prefer.',
+      'Proceedings before Panamanian authorities are conducted in Spanish, and foreign documents usually need an official translation. During the assessment we tell you which documents need translating.',
+    ],
+  },
   footerTagline: 'Law Firm · Panama City',
   rights: 'All rights reserved.',
   footerLinks: [
@@ -74,7 +87,7 @@ const pages = {
     num: '01',
     cardName: 'Residency & immigration',
     cardDesc: 'Profile assessment, residency application, dependants, renewals and corrections.',
-    title: 'Panama Residency for Foreign Nationals | Juriscorp S.C.',
+    title: 'Panama Residency Lawyer for Foreign Nationals | Juriscorp',
     description:
       'Assessment of your immigration profile and preparation of your Panama residency application: dependants, renewals, corrections and foreign documents.',
     schemaName: 'Residency and immigration in Panama',
@@ -198,7 +211,7 @@ const pages = {
     num: '02',
     cardName: 'Work permits',
     cardDesc: 'The right permit, applications and renewals, worker and employer documents.',
-    title: 'Work Permits for Foreign Nationals in Panama | Juriscorp',
+    title: 'Work Permit Lawyer for Foreigners in Panama | Juriscorp',
     description:
       'Work permits for foreign nationals in Panama: assessment of the applicable permit, applications and renewals, employer documentation and expiry tracking.',
     schemaName: 'Work permits for foreign nationals in Panama',
@@ -309,7 +322,7 @@ const pages = {
     num: '03',
     cardName: 'Legal relocation',
     cardDesc: 'One legal plan for your move: residency, work permit, housing and business.',
-    title: 'Legal Relocation to Panama | Juriscorp S.C.',
+    title: 'Moving to Panama: Legal Relocation Support | Juriscorp',
     description:
       'Legal support to settle in Panama: pre-move document plan, residency and work permit, lease review, property purchase or setting up a company.',
     schemaName: 'Legal support for relocating to Panama',
@@ -441,7 +454,7 @@ const pages = {
     num: '04',
     cardName: 'Contracts, companies & real estate',
     cardDesc: 'Contracts, shareholder agreements, corporate documents, powers of attorney and title searches.',
-    title: 'Contracts, Companies & Real Estate in Panama | Juriscorp',
+    title: 'Contracts & Real Estate Lawyer in Panama | Juriscorp S.C.',
     description:
       'Contract drafting and review, shareholder agreements, corporate documents, powers of attorney, title searches and review of property purchases and leases in Panama.',
     schemaName: 'Contracts, corporate documents and real estate review in Panama',
@@ -562,7 +575,7 @@ const pages = {
     num: '05',
     cardName: 'Administrative law',
     cardDesc: 'Petitions, administrative appeals, penalties, permits, licences and public procurement.',
-    title: 'Administrative Law in Panama | Juriscorp S.C.',
+    title: 'Administrative Law Attorney in Panama | Juriscorp S.C.',
     description:
       'Petitions, case follow-up, administrative appeals, defence against penalties, permits and licences, and legal review of public procurement in Panama.',
     schemaName: 'Administrative law in Panama',
@@ -714,7 +727,7 @@ const pages = {
     num: '05',
     cardName: 'Tax law',
     cardDesc: 'Tax opinions, responses to DGI requests, and appeals before the DGI and the TAT.',
-    title: 'Tax Law in Panama | Juriscorp S.C.',
+    title: 'Tax Law Attorney in Panama | Juriscorp S.C.',
     description:
       'Tax opinions and appeals in Panama: responses to DGI requests and audits, tax penalties, and appeals before the DGI and the Administrative Tax Tribunal.',
     schemaName: 'Tax opinions and appeals in Panama',

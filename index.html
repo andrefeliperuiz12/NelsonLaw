@@ -11,11 +11,11 @@
        búsqueda. Si lo alargas, vuelve a contarlo. -->
   <title>Juriscorp S.C. | Abogados en Panamá: residencia y empresas</title>
   <meta name="description"
-    content="Asesoría legal en Panamá para personas y empresas, en el país o desde el exterior: residencia, permisos de trabajo, contratos, inmuebles y asuntos ante el Estado." />
+    content="Abogados en Panamá, en español e inglés: residencia, permisos de trabajo, contratos, inmuebles y asuntos ante el Estado, para personas y empresas." />
   <meta name="keywords"
     content="abogados Panamá, residencia en Panamá, permiso de trabajo Panamá, relocalización Panamá, contratos Panamá, estudio de título Panamá, derecho administrativo Panamá, derecho tributario Panamá, Sala Tercera, Juriscorp S.C." />
   <meta name="author" content="Juriscorp S.C." />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <link rel="canonical" href="https://juriscorppanama.com/" />
 
   <!-- hreflang: apunta a la página EQUIVALENTE en el otro idioma. x-default
@@ -35,7 +35,7 @@
   <meta property="og:url" content="https://juriscorppanama.com/" />
   <meta property="og:title" content="Juriscorp S.C. | Abogados en Panamá" />
   <meta property="og:description"
-    content="Residencia y permisos de trabajo, contratos, empresas e inmuebles, y asuntos administrativos, tributarios y constitucionales en Panamá." />
+    content="Residencia y permisos de trabajo, contratos, empresas e inmuebles, y asuntos administrativos, tributarios y constitucionales en Panamá. Atención en español e inglés." />
   <meta property="og:image" content="https://juriscorppanama.com/assets/img/square-logo-og.png" />
   <!-- Dimensiones reales del fichero: 600x600. Declararlas evita que la vista
        previa salga vacía en el primer compartido. -->
@@ -43,6 +43,7 @@
   <meta property="og:image:height" content="600" />
   <meta property="og:image:alt" content="Logotipo de Juriscorp S.C., firma de abogados en Ciudad de Panamá" />
   <meta property="og:locale" content="es_PA" />
+  <meta property="og:locale:alternate" content="en_US" />
 
   <!-- "summary" y no "summary_large_image" A PROPÓSITO: el logotipo es
        cuadrado y la tarjeta grande lo recortaría. -->
@@ -58,88 +59,14 @@
          sin recibir correo (sin registros MX, comprobado el 2026-08-24). Si
          el correo cambia, cambiarlo en las dos portadas, en las dos políticas
          de privacidad y en scripts/pages/site.mjs (llms.txt).
-       - "availableLanguage" declara sólo español. Que exista una versión
-         inglesa del sitio no acredita atención en inglés; se añadirá cuando
-         el despacho lo confirme.
+       - Este bloque JSON-LD lo regenera scripts/build-pages.mjs (la firma,
+         el abogado y el sitio salen de scripts/pages/schema.mjs). A mano sólo
+         se edita el FAQPage. Idiomas de atención: español e inglés
+         (confirmado por el propietario el 2026-10-13).
        - Las preguntas de FAQPage son las mismas que se ven en #preguntas.
          Si editas una, edita la otra. -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "LegalService",
-        "@id": "https://juriscorppanama.com/#organizacion",
-        "name": "Juriscorp S.C.",
-        "description": "Asesoría legal en Panamá para personas y empresas, en el país o desde el exterior: residencia y migración, permisos de trabajo, relocalización legal, contratos, empresas e inmuebles, y asuntos administrativos, tributarios, constitucionales y contencioso-administrativos.",
-        "url": "https://juriscorppanama.com",
-        "logo": "https://juriscorppanama.com/assets/img/square-logo-og.png",
-        "image": "https://juriscorppanama.com/assets/img/square-logo-og.png",
-        "telephone": "+507-6673-0357",
-        "email": "juriscorplawfirm@gmail.com",
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "PA",
-          "addressLocality": "Ancón",
-          "addressRegion": "Panamá"
-        },
-        "areaServed": {"@type": "Country", "name": "Panamá"},
-        "availableLanguage": [
-          {"@type": "Language", "name": "Español", "alternateName": "es"}
-        ],
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Servicios legales",
-          "itemListElement": [
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Residencia y migración", "url": "https://juriscorppanama.com/residencia-en-panama"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Permisos de trabajo", "url": "https://juriscorppanama.com/permisos-de-trabajo"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Relocalización legal", "url": "https://juriscorppanama.com/relocalizacion-legal"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Contratos, empresas e inmuebles", "url": "https://juriscorppanama.com/contratos-empresas-inmuebles"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Derecho administrativo", "url": "https://juriscorppanama.com/derecho-administrativo"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Derecho tributario", "url": "https://juriscorppanama.com/derecho-tributario"}},
-            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Constitucional y contencioso-administrativo", "url": "https://juriscorppanama.com/constitucional-contencioso-administrativo"}}
-          ]
-        },
-        "founder": {
-          "@type": "Person",
-          "name": "Nelson Ruiz Pinilla",
-          "jobTitle": "Abogado",
-          "alumniOf": {"@type": "CollegeOrUniversity", "name": "Universidad de Panamá"}
-        },
-        "privacyPolicy": "https://juriscorppanama.com/privacidad"
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "¿Necesito estar en Panamá para iniciar?",
-            "acceptedAnswer": {"@type": "Answer", "text": "No para la evaluación ni para la preparación de documentos, que se hacen a distancia. Algunos trámites exigen que el interesado comparezca en persona en Panamá; se lo indicamos antes de aceptar el encargo."}
-          },
-          {
-            "@type": "Question",
-            "name": "¿Enviar una consulta me compromete o crea una relación abogado-cliente?",
-            "acceptedAnswer": {"@type": "Answer", "text": "No. La consulta sirve para evaluar si podemos ayudarle. Antes de aceptar un asunto verificamos que no exista conflicto de interés, y el encargo se formaliza solo mediante una propuesta escrita que usted acepta."}
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué debo enviar al principio?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Un resumen breve, el país donde se encuentra y, si existe, la fecha de una notificación o vencimiento. No envíe pasaportes, expedientes completos ni datos de salud por el formulario; si hacen falta, se los pediremos por un canal acordado."}
-          },
-          {
-            "@type": "Question",
-            "name": "¿Cómo se fijan los honorarios?",
-            "acceptedAnswer": {"@type": "Answer", "text": "En una propuesta escrita según el alcance del asunto. Los honorarios se indican separados de los gastos de terceros, como tasas oficiales, apostillas, traducciones o notaría."}
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué asuntos no atienden?",
-            "acceptedAnswer": {"@type": "Answer", "text": "Actualmente no ofrecemos defensa penal, litigios laborales, disputas de linderos o procesos agrarios, asuntos electorales ni trámites de naturalización. Si su consulta no encaja con nuestros servicios, se lo indicaremos."}
-          }
-        ]
-      }
-    ]
-  }
+  {"@context":"https://schema.org","@graph":[{"@type":"LegalService","@id":"https://juriscorppanama.com/#organizacion","name":"Juriscorp S.C.","description":"Asesoría legal en Panamá, en español e inglés, para personas y empresas, en el país o desde el exterior: residencia y migración, permisos de trabajo, relocalización legal, contratos, empresas e inmuebles, y asuntos administrativos, tributarios, constitucionales y contencioso-administrativos.","url":"https://juriscorppanama.com/","logo":"https://juriscorppanama.com/assets/img/square-logo-og.png","image":"https://juriscorppanama.com/assets/img/square-logo-og.png","telephone":"+507-6673-0357","email":"juriscorplawfirm@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Ancón","addressRegion":"Panamá","addressCountry":"PA"},"areaServed":{"@type":"Country","name":"Panamá"},"availableLanguage":[{"@type":"Language","name":"Spanish","alternateName":"es"},{"@type":"Language","name":"English","alternateName":"en"}],"knowsLanguage":["es","en"],"knowsAbout":["Residencia en Panamá","Permisos de trabajo para extranjeros","Relocalización legal a Panamá","Contratos, sociedades e inmuebles en Panamá","Derecho administrativo panameño","Derecho tributario panameño","Derecho constitucional y contencioso-administrativo panameño"],"contactPoint":{"@type":"ContactPoint","contactType":"Consultas de nuevos clientes","telephone":"+507-6673-0357","email":"juriscorplawfirm@gmail.com","url":"https://juriscorppanama.com/#contacto","availableLanguage":[{"@type":"Language","name":"Spanish","alternateName":"es"},{"@type":"Language","name":"English","alternateName":"en"}]},"hasOfferCatalog":{"@type":"OfferCatalog","name":"Servicios legales","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/residencia-en-panama#servicio","name":"Residencia y migración","url":"https://juriscorppanama.com/residencia-en-panama"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/permisos-de-trabajo#servicio","name":"Permisos de trabajo","url":"https://juriscorppanama.com/permisos-de-trabajo"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/relocalizacion-legal#servicio","name":"Relocalización legal","url":"https://juriscorppanama.com/relocalizacion-legal"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/contratos-empresas-inmuebles#servicio","name":"Contratos, empresas e inmuebles","url":"https://juriscorppanama.com/contratos-empresas-inmuebles"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/derecho-administrativo#servicio","name":"Derecho administrativo","url":"https://juriscorppanama.com/derecho-administrativo"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/derecho-tributario#servicio","name":"Derecho tributario","url":"https://juriscorppanama.com/derecho-tributario"}},{"@type":"Offer","itemOffered":{"@type":"Service","@id":"https://juriscorppanama.com/constitucional-contencioso-administrativo#servicio","name":"Constitucional y contencioso-administrativo","url":"https://juriscorppanama.com/constitucional-contencioso-administrativo"}}]},"founder":{"@id":"https://juriscorppanama.com/#nelson-ruiz"},"privacyPolicy":"https://juriscorppanama.com/privacidad"},{"@type":"Person","@id":"https://juriscorppanama.com/#nelson-ruiz","name":"Nelson Ruiz Pinilla","jobTitle":"Abogado","description":"Abogado en Panamá con carrera jurídica desde 1993 y titular de Juriscorp S.C. Atiende en español y en inglés.","image":"https://juriscorppanama.com/assets/img/nelson-ruiz-960.jpg","url":"https://juriscorppanama.com/#sobre-mi","knowsLanguage":["es","en"],"knowsAbout":["Residencia en Panamá","Permisos de trabajo para extranjeros","Relocalización legal a Panamá","Contratos, sociedades e inmuebles en Panamá","Derecho administrativo panameño","Derecho tributario panameño","Derecho constitucional y contencioso-administrativo panameño"],"worksFor":{"@id":"https://juriscorppanama.com/#organizacion"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Universidad de Panamá"}},{"@type":"WebSite","@id":"https://juriscorppanama.com/#sitio","url":"https://juriscorppanama.com/","name":"Juriscorp S.C.","inLanguage":["es","en"],"publisher":{"@id":"https://juriscorppanama.com/#organizacion"}},{"@type":"WebPage","@id":"https://juriscorppanama.com/#pagina","url":"https://juriscorppanama.com/","name":"Juriscorp S.C. | Abogados en Panamá: residencia y empresas","description":"Abogados en Panamá, en español e inglés: residencia, permisos de trabajo, contratos, inmuebles y asuntos ante el Estado, para personas y empresas.","inLanguage":"es","isPartOf":{"@id":"https://juriscorppanama.com/#sitio"},"about":{"@id":"https://juriscorppanama.com/#organizacion"},"publisher":{"@id":"https://juriscorppanama.com/#organizacion"},"dateModified":"2026-10-13"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Necesito estar en Panamá para iniciar?","acceptedAnswer":{"@type":"Answer","text":"No para la evaluación ni para la preparación de documentos, que se hacen a distancia. Algunos trámites exigen que el interesado comparezca en persona en Panamá; se lo indicamos antes de aceptar el encargo."}},{"@type":"Question","name":"¿Enviar una consulta me compromete o crea una relación abogado-cliente?","acceptedAnswer":{"@type":"Answer","text":"No. La consulta sirve para evaluar si podemos ayudarle. Antes de aceptar un asunto verificamos que no exista conflicto de interés, y el encargo se formaliza solo mediante una propuesta escrita que usted acepta."}},{"@type":"Question","name":"¿Qué debo enviar al principio?","acceptedAnswer":{"@type":"Answer","text":"Un resumen breve, el país donde se encuentra y, si existe, la fecha de una notificación o vencimiento. No envíe pasaportes, expedientes completos ni datos de salud por el formulario; si hacen falta, se los pediremos por un canal acordado."}},{"@type":"Question","name":"¿Cómo se fijan los honorarios?","acceptedAnswer":{"@type":"Answer","text":"En una propuesta escrita según el alcance del asunto. Los honorarios se indican separados de los gastos de terceros, como tasas oficiales, apostillas, traducciones o notaría."}},{"@type":"Question","name":"¿Pueden atenderme en inglés?","acceptedAnswer":{"@type":"Answer","text":"Sí. Atendemos consultas en español y en inglés, así que puede escribirnos en el idioma que prefiera. Los trámites ante las autoridades panameñas se realizan en español, y los documentos extranjeros suelen requerir traducción oficial; en la evaluación le indicamos qué debe traducirse."}},{"@type":"Question","name":"¿Qué asuntos no atienden?","acceptedAnswer":{"@type":"Answer","text":"Actualmente no ofrecemos defensa penal, litigios laborales, disputas de linderos o procesos agrarios, asuntos electorales ni trámites de naturalización. Si su consulta no encaja con nuestros servicios, se lo indicaremos."}}],"@id":"https://juriscorppanama.com/#preguntas","inLanguage":"es"}]}
   </script>
 
   <!-- Fonts — AUTO-ALOJADAS. No vuelvas a enlazar fonts.googleapis.com:
@@ -209,6 +136,7 @@
       </div>
       <p class="hero-aside">
         ¿No sabe qué servicio necesita? <a href="#situaciones">Empiece por su situación</a>.
+        Atendemos en español y en inglés.
       </p>
     </div>
 
@@ -445,6 +373,10 @@
             trabajar de Juriscorp: análisis cuidadoso, documentos bien construidos y plazos bajo
             control.
           </p>
+          <p class="about-text">
+            Atiende a sus clientes en español y en inglés, también a quienes consultan desde el
+            exterior.
+          </p>
 
           <div class="about-stats">
             <div>
@@ -553,6 +485,18 @@
             <p>
               En una propuesta escrita según el alcance del asunto. Los honorarios se indican separados de
               los gastos de terceros, como tasas oficiales, apostillas, traducciones o notaría.
+            </p>
+          </div>
+        </details>
+
+        <details>
+          <summary>¿Pueden atenderme en inglés?</summary>
+          <div class="area-faq-answer">
+            <p>
+              Sí. Atendemos consultas en español y en inglés, así que puede escribirnos en el idioma que
+              prefiera. Los trámites ante las autoridades panameñas se realizan en español, y los
+              documentos extranjeros suelen requerir traducción oficial; en la evaluación le indicamos
+              qué debe traducirse.
             </p>
           </div>
         </details>
@@ -812,6 +756,7 @@
       <div class="footer-copy">
         <!-- El año lo actualiza js/main.js; este valor es el respaldo sin JS. -->
         &copy; <span id="footerYear">2026</span> Juriscorp S.C. Todos los derechos reservados.
+        <span class="footer-updated">Última actualización: <time datetime="2026-10-13">13 de octubre de 2026</time></span>
       </div>
       <div class="footer-confidentiality">
         La información proporcionada a través de este sitio se trata con confidencialidad. Este sitio no

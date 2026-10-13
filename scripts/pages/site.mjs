@@ -12,6 +12,17 @@ export const SITE = {
   // MX). Si cambia, actualizarlo también en index.html, en/index.html,
   // privacidad.html y en/privacy.html.
   email: 'juriscorplawfirm@gmail.com',
+  // Perfiles externos de la firma y del abogado (Google Business Profile,
+  // LinkedIn, directorios). Vacíos a propósito: se publican en `sameAs` de los
+  // datos estructurados SOLO cuando existan y sean los reales.
+  sameAs: [],
+  personSameAs: [],
+  // Fechas del contenido (ISO). `modified` se sube a mano cuando cambia el
+  // texto de las páginas: alimenta dateModified, <lastmod> del sitemap y la
+  // línea visible "Última actualización" del pie. Una fecha honesta vale más
+  // que una que cambia sola en cada build.
+  published: '2026-10-08',
+  modified: '2026-10-13',
   slugs: {
     residencia: { es: 'residencia-en-panama', en: 'panama-residency' },
     permisos: { es: 'permisos-de-trabajo', en: 'work-permits' },
@@ -37,5 +48,5 @@ export const PAGE_ORDER = [
 // Páginas escritas a mano que también van al sitemap. '' es la portada.
 export const STATIC_PAGES = [
   { es: '', en: '', changefreq: 'weekly', priority: '1.0' },
-  { es: 'privacidad', en: 'privacy', changefreq: 'yearly', priority: '0.3' },
+  { es: 'privacidad', en: 'privacy', changefreq: 'yearly', priority: '0.3', lastmod: '2026-10-08' },
 ];

@@ -40,6 +40,17 @@ const ui = {
     'El contenido de esta página tiene carácter informativo general sobre el ordenamiento panameño y no constituye asesoría legal ni sustituye el análisis de un caso concreto. Enviar una consulta no crea por sí solo una relación abogado-cliente: el encargo se formaliza únicamente mediante acuerdo escrito, después de evaluar el asunto y verificar que no exista conflicto de interés.',
   footerTagline: 'Law Firm · Ciudad de Panamá',
   rights: 'Todos los derechos reservados.',
+  updatedLabel: 'Última actualización:',
+  logoAlt: 'Logotipo de Juriscorp S.C., firma de abogados en Ciudad de Panamá',
+  channelName: 'Consulta inicial en español o en inglés',
+  // Se añade al final de las preguntas de cada página de servicio.
+  languageFaq: {
+    q: '¿Pueden atenderme en inglés?',
+    a: [
+      'Sí. Atendemos consultas en español y en inglés, así que puede escribirnos en el idioma que prefiera.',
+      'Los trámites ante las autoridades panameñas se realizan en español, y los documentos extranjeros suelen requerir traducción oficial. En la evaluación le indicamos qué debe traducirse.',
+    ],
+  },
   footerLinks: [
     { href: '/' + s('residencia'), label: 'Residencia' },
     { href: '/' + s('permisos'), label: 'Permisos de trabajo' },

@@ -213,7 +213,7 @@ const REVIEW = [
   // Son expresiones regulares: '\\b' evita contar "penalties" como "penal".
   'penal\\b', 'criminal', 'naturaliz', 'naturalis', 'nacionaliz', 'linderos', 'boundary',
   'agrari', 'garantiz', 'guarantee', 'sin viajar', 'without travel', 'electoral',
-  'agente residente', 'registered agent', 'inglés', 'English', 'última instancia', 'last resort',
+  'agente residente', 'registered agent', 'última instancia', 'last resort',
 ];
 
 function visibleText(html) {

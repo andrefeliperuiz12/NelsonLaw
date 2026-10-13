@@ -12,7 +12,9 @@
 //
 // REGLAS. Mismas que el resto del sitio: nada que no esté respaldado.
 //   - Sin requisitos, montos ni plazos legales concretos.
-//   - Sin afirmar atención en inglés: sólo que el sitio existe en inglés.
+//   - Idiomas de atención: español e inglés (confirmado por el propietario el
+//     2026-10-13; el abogado titular es bilingüe y ya llevó un caso en inglés).
+//     Los trámites ante las autoridades siguen siendo en español.
 //   - Sin resultados garantizados ni disponibilidad 24/7.
 //   - Las exclusiones deben coincidir con las de las páginas y con las
 //     preguntas frecuentes de la portada.
@@ -23,9 +25,9 @@ export const LLMS = {
   es: {
     title: 'Juriscorp S.C.',
     summary:
-      'Firma de abogados en Ciudad de Panamá. Asesora a personas y empresas, en Panamá o desde el exterior, en residencia y permisos de trabajo de extranjeros, relocalización legal, contratos, sociedades e inmuebles, y asuntos administrativos, tributarios, constitucionales y contencioso-administrativos. El abogado titular es Nelson Ruiz Pinilla.',
+      'Firma de abogados en Ciudad de Panamá que atiende en español e inglés. Asesora a personas y empresas, en Panamá o desde el exterior, en residencia y permisos de trabajo de extranjeros, relocalización legal, contratos, sociedades e inmuebles, y asuntos administrativos, tributarios, constitucionales y contencioso-administrativos. El abogado titular es Nelson Ruiz Pinilla.',
     notes: [
-      'Este sitio existe en español (principal) y en inglés, con el mismo alcance. Los procedimientos ante autoridades panameñas se tramitan en español; el idioma de atención se confirma al responder cada consulta.',
+      'Se atiende en español y en inglés, y este sitio existe en los dos idiomas, con el mismo alcance. Los procedimientos ante autoridades panameñas se tramitan en español y los documentos extranjeros suelen requerir traducción oficial.',
       'Todo servicio empieza con una evaluación inicial. Enviar una consulta no formaliza la contratación ni confirma que el despacho acepte el asunto: el encargo se formaliza por escrito.',
       'El contenido es informativo general y no constituye asesoría legal. No incluye requisitos, costos ni plazos oficiales: dependen de cada trámite y deben verificarse con la autoridad competente.',
       'Algunos trámites exigen la comparecencia personal del interesado en Panamá. No se ofrece "residencia sin viajar" ni trámites totalmente virtuales.',
@@ -52,9 +54,9 @@ export const LLMS = {
   en: {
     title: 'Juriscorp S.C. (English)',
     summary:
-      'Law firm in Panama City. It advises individuals and companies, in Panama or from abroad, on residency and work permits for foreign nationals, legal relocation, contracts, companies and real estate, and administrative, tax, constitutional and administrative litigation matters. The lead attorney is Nelson Ruiz Pinilla.',
+      'Law firm in Panama City that works in English and Spanish. It advises individuals and companies, in Panama or from abroad, on residency and work permits for foreign nationals, legal relocation, contracts, companies and real estate, and administrative, tax, constitutional and administrative litigation matters. The lead attorney is Nelson Ruiz Pinilla.',
     notes: [
-      'This site is available in Spanish (main language) and English, with the same scope. Proceedings before Panamanian authorities are conducted in Spanish; the language of service is confirmed when each enquiry is answered.',
+      'Clients are attended in English and Spanish, and this site is available in both languages with the same scope. Proceedings before Panamanian authorities are conducted in Spanish, and foreign documents usually need an official translation.',
       'Every service starts with an initial assessment. Sending an enquiry does not engage the firm or confirm that it will take the matter: an engagement is formalised in writing.',
       'The content is general information and is not legal advice. It does not state official requirements, costs or deadlines: these depend on each procedure and must be checked with the competent authority.',
       'Some procedures require the person concerned to appear in person in Panama. The firm does not offer "residency without travel" or fully virtual procedures.',
